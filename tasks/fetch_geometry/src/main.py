@@ -8,7 +8,7 @@ from google.cloud import storage
 from dotenv import load_dotenv
 from process_geometry import process_geometry
 
-min_year = 2025
+min_year = 2024
 base_url = "https://daten.gdz.bkg.bund.de/produkte/vg/vg250_ebenen_0101/"
 
 raw_dir = "./tmp/raw"
@@ -75,7 +75,7 @@ def run():
 
         with open(os.path.join(output_dir, file_name), "wb") as f:
             f.write(r.content)
-        print(f"Wrote {year} data to {output_dir}{file_name}")
+        print(f"Wrote to {output_dir}{file_name}")
 
     # 2. Process new data and upload to GCS
     for i, year in enumerate(new_years):
@@ -87,7 +87,7 @@ def run():
             f"gs://datenhub-net-static/data/boundaries/boundaries_{year}_0101.geojson"
         )
 
-        print(f"Processing {year} data ({i}/{len(new_years)})", end="")
+        print(f"Processing {year} data ({i + 1}/{len(new_years)})... ", end="")
         res = process_geometry(input_path)
         print("done")
 

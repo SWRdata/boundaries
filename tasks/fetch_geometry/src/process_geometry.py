@@ -11,6 +11,7 @@ def process_geometry(input_path: str) -> gp.GeoDataFrame:
 
     country = gp.read_file(f"zip://{input_path}!{fp}/VG250_STA.shp")
     country_processed = country.loc[country["OBJID"] == "DEBKGVG200000CKM"][output_cols]
+
     # laender = gp.read_file(f"zip://{input_path}!{fp}/VG250_LAN.shp")
     # kreise = gp.read_file(f"zip://{input_path}!{fp}/VG250_KRS.shp")
     # regierungsbezirke = gp.read_file(f"zip://{input_path}!{fp}/VG250_RBZ.shp")
