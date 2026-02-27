@@ -1,2 +1,5 @@
-# boundaries
-German admin boundaries in .versatiles format
+# Boundaries
+
+- max.koehler@swr.de
+
+## Contributing

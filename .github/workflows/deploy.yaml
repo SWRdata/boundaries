@@ -1,0 +1,43 @@
+name: Deploy Data Pipeline
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - '**/dag/**'
+  #     - '**/tasks/**'
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  check-initial-commit:
+    runs-on: ubuntu-latest
+    outputs:
+      is_initial: ${{ steps.check_init.outputs.is_initial }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check if this is the initial commit and commit message is "Initial commit"
+        id: check_init
+        run: |
+          count=$(git rev-list --count HEAD)
+          message=$(git log -1 --pretty=%B)
+          echo "Commit count: $count"
+          echo "Commit message: '$message'"
+          if [ "$count" -eq 1 ] && [ "$message" = "Initial commit" ]; then
+            echo "is_initial=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_initial=false" >> $GITHUB_OUTPUT
+          fi
+
+  reuse-deploy-data-pipeline:
+    needs: check-initial-commit
+    if: needs.check-initial-commit.outputs.is_initial == 'false'
+    uses: SWRData/workflows-swr-data-lab/.github/workflows/deploy_data_pipeline.yml@main
+    secrets: inherit
+    with:
+      enable_cleanup: true
