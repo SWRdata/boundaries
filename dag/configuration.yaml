@@ -2,37 +2,21 @@ image_repo: europe-west3-docker.pkg.dev/swr-datalab-prod/etl-images-airflow-swr-
 
 # The metadata for the dag are defined below
 dag_metadata:
-  description: 'A data pipeline that does awesome things.'
+  description: 'Produces normalised geometry files for German administrative boundaries'
   schedule_interval: '10 * * * *'
   max_active_runs: 1
   catchup: False
-  is_paused_upon_creation: False
-  start_date: 1 # Given in days
+  is_paused_upon_creation: True
+  start_date: 1 # days
 
   default_args:
     owner: airflow
     depends_on_past: False
     retries: 1
-    retry_delay: 3 # Given in minutes
+    retry_delay: 3 # minutes
 
 dataplex_metadata:
-  # Manual Dataset Specification
-  dataset_id: null # WICHTIG!!!! Bei Scraper-Repos die entsprechende Dataset_id, soll kein Datenkatalog-Eintrag erstellt werden null
-
-  fields:
-    quellenname: '' # Sprechender Name der Datenquelle, bspw. Tierseucheninformationssystem (TSIS)
-    quelle_kurz: '' # Kurzname der Quelle, der auch als Dataset Präfix genutzt wird, bspw. fli
-    urheber: '' # Urheber (Wer stellt die Daten zur Verfügung), bspw. Friedrich Löffler Institut
-    beschreibung: '' # Beschreibung der Datenquelle
-    url: '' # Link zur Originalquelle (so genau wie möglich)
-    datentyp: 'dynamisch' # Airflow Code ist per definition dynamisch, alternativ "statisch"
-    datenstand: '' # freilassen: wird über die Big Query Tabellen befüllt
-    meldedatum: '' # freilassen: wird über die Big Query Tabellen befüllt
-    tags: # Schlüsselwörter die helfen, eine Datenquelle zu finden, bswp. tierseuchen, schweinepest
-      - tag1
-      - tag2
-    anmerkung: '' # Generelle Anmerkungen zur Datenquelle
-    data_link: '' # Link zu den Daten außerhalb von Big Query, bspw. Aleph oder Google Buckets
+  dataset_id: null
 
 # The parameters for KubernetesPodOperator are defined below.
 # The variable image_suffix shall be the same as the name of the folder with
