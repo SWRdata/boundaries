@@ -54,7 +54,7 @@ def run():
     for year in os.listdir(raw_dir):
         print(year)
         input_path = os.path.join(raw_dir, year, "vg250_01-01.utm32s.shape.ebenen.zip")
-        output_path = os.path.join(processed_dir, f"{year}_vg250_01-01.geojson")
+        output_path = os.path.join(processed_dir, f"boundaries_{year}_01-01.geojson")
 
         if os.path.exists(output_path):
             print(f"Found cached data at {output_path}, skipping")
