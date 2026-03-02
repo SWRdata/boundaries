@@ -89,7 +89,7 @@
 	h1 {
 		font-weight: 600;
 		font-size: var(--fs-small-1);
-		margin-bottom: 0.5em;
+		margin-bottom: 0.25em;
 	}
 	.controls {
 		position: absolute;
@@ -97,12 +97,21 @@
 		left: 0.5rem;
 		z-index: 100;
 		background: var(--color-pageFill);
-		padding: 0.5rem;
-		border: 1px solid black;
+		padding: 0.75rem;
+		border-radius: 3px;
+		padding-right: 1.25rem;
+		box-shadow: 0px 1px 3px rgba(black, 0.1);
+		border: 1px solid rgba(black, 0.75);
+	}
+	select {
+		background: transparent;
+		padding: 0.15rem 0.4rem;
+		border: 1px solid gray;
+		border-radius: 2px;
 	}
 	label {
 		display: block;
-		font-size: var(--fs-small-2);
+		font-size: var(--fs-small-3);
 	}
 	select {
 		font-size: var(--fs-small-2);
