@@ -7,6 +7,8 @@ def make_versatiles(input_path: str, output_path: str):
     subprocess.run(
         [
             "tippecanoe",
+            "-l",
+            "boundaries",
             "-zg",
             "--extend-zooms-if-still-dropping",
             "--coalesce-densest-as-needed",

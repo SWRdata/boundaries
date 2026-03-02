@@ -9,10 +9,10 @@ from fetch_geometry import fetch_geometry
 from make_versatiles import make_versatiles
 from process_geometry import process_geometry
 
-min_year = 2024
 base_url = "https://daten.gdz.bkg.bund.de/produkte/vg/vg250_ebenen_0101/"
 gcs_bucket = "datenhub-net-static"
 gcs_path = "data/boundaries/"
+min_year = 2024
 
 raw_dir = "./tmp/raw/"
 processed_dir = "./tmp/processed/"
@@ -56,9 +56,7 @@ def run():
         print(f"wrote to {geojson_path}")
 
         print("Making versatiles...")
-        print(versatiles_path)
         make_versatiles(geojson_path, versatiles_path)
-        print("done")
 
         # print(f"Uploading to GCS ({output_path})... ", end="")
         # res.to_file(output_path)
