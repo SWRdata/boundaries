@@ -1,5 +1,4 @@
 import os
-import re
 from subprocess import CalledProcessError
 
 from dotenv import load_dotenv
@@ -22,7 +21,7 @@ skip_fetch = True
 
 def run():
     load_dotenv()
-    cwd = os.path.dirname(os.path.realpath(__file__))
+    # cwd = os.path.dirname(os.path.realpath(__file__))
     os.makedirs(os.path.dirname(raw_dir), exist_ok=True)
     os.makedirs(os.path.dirname(processed_dir), exist_ok=True)
 
