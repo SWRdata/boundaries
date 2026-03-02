@@ -17,12 +17,14 @@
 
   let tooltipCoordinates = $derived(selected ? selectionCoordinates : [0, 0]);
   let tooltipData = $derived(selected?.properties);
-  let hovered = $state(null);
+
+  let hovered = $state();
 
   const handleMouseMove = (e) => {
-    hovered = e.features?.[0];
+    hovered = e.features[0];
   };
   const handleMouseLeave = (e) => {
+    console.log(hovered);
     hovered = null;
   };
 </script>
@@ -39,14 +41,33 @@
     showDebug
   >
     <VectorTileSource id="boundaries" url={tileUrl} />
+
     <VectorLayer
+      id="fill"
       sourceId="boundaries"
       sourceLayer="boundaries"
+      type="fill"
+      onmouseleave={handleMouseLeave}
+      onmousemove={handleMouseMove}
+      paint={{
+        "fill-color": "purple",
+        "fill-opacity": 0.2,
+      }}
+    />
+    <VectorLayer
       id="outline"
+      bind:hovered
+      sourceId="boundaries"
+      sourceLayer="boundaries"
       type="line"
       paint={{
-        "line-width": 1,
-        "line-color": "purple",
+        "line-width": [
+          "case",
+          ["any", ["boolean", ["feature-state", "hovered"], false]],
+          1.5,
+          0.75,
+        ],
+        "line-color": "black",
         "line-opacity": 1,
       }}
     />
@@ -60,7 +81,6 @@
     width: 100%;
     flex-grow: 1;
     height: 100%;
-    position: relative;
     height: 100vh;
   }
 </style>
