@@ -7,9 +7,11 @@ import geopandas as gp
 
 def process_geometry(input_path: str) -> gp.GeoDataFrame:
     fp = "vg250_01-01.utm32s.shape.ebenen/vg250_ebenen_0101"
-    output_cols = ["OBJID", "ARS", "NUTS", "GEN", "BEZ", "geometry"]
+    output_cols = ["OBJID", "ARS", "NUTS", "GEN", "BEZ", "kind", "geometry"]
 
     country = gp.read_file(f"zip://{input_path}!{fp}/VG250_STA.shp")
+    country["id"] = country["OBJID"]
+    country["kind"] = "staat"
     country_processed = country.loc[country["OBJID"] == "DEBKGVG200000CKM"][output_cols]
 
     # laender = gp.read_file(f"zip://{input_path}!{fp}/VG250_LAN.shp")

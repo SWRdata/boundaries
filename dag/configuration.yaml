@@ -1,8 +1,7 @@
 image_repo: europe-west3-docker.pkg.dev/swr-datalab-prod/etl-images-airflow-swr-data-lab
 
-# The metadata for the dag are defined below
 dag_metadata:
-  description: 'Produces normalised geometry files for German administrative boundaries'
+  description: 'Produces normalised geometry files of German administrative boundaries'
   schedule_interval: '10 * * * *'
   max_active_runs: 1
   catchup: False
@@ -18,16 +17,7 @@ dag_metadata:
 dataplex_metadata:
   dataset_id: null
 
-# The parameters for KubernetesPodOperator are defined below.
-# The variable image_suffix shall be the same as the name of the folder with
-# the source code for extract, transform, load and other tasks.
-# Replace the environment variables with your corresponding env variables.
-# The variable task_id can be set to a arbitrary string.
-# Following vars can be reused by prepending the var name with a *, i.e. *dag_env_vars
-
 dag_env_vars: &dag_env_vars
-  airflow_env_var1: "{{ var.value.get('DUMMY_ENV_VAR1') }}"
-  env_var2: 'val_env_var1'
 
 container_resource: &container_resource
   requests:
@@ -38,26 +28,10 @@ container_resource: &container_resource
     memory: 1000Mi
 
 dag_task_parameters:
-  - task_id: scrape_x
-    image_suffix: python_allrounder
-    cmds:
-      - python
-      - scraper_main.py
+  - task_id: make_boundaries
+    image_suffix: make_boundaries
     environment_variables:
       <<: *dag_env_vars
-      env_var0: 'val_env_var0'
-    container_resource:
-      <<: *container_resource
-    is_delete_operator_pod: False
-
-  - task_id: refine_x
-    image_suffix: python_allrounder
-    cmds:
-      - python
-      - refiner_main.py
-    environment_variables:
-      <<: *dag_env_vars
-      env_var0: 'val_env_var0'
     container_resource:
       <<: *container_resource
     is_delete_operator_pod: False
