@@ -8,6 +8,7 @@
     VectorLayer,
     NavigationControl,
     Tooltip,
+    FormLabel,
     AttributionControl,
   } from "@swr-data-lab/components";
 
@@ -27,9 +28,20 @@
     console.log(hovered);
     hovered = null;
   };
+  let filter = $state("land");
 </script>
 
 <figure class="container">
+  <div class="controls">
+    <h1>SWRDL Boundaries</h1>
+    <div class="input">
+      <label for="level-select">Level</label>
+      <select name="level-select" id="" bind:value={filter}>
+        <option value="staat">Staat</option>
+        <option value="land">Bundesländer</option>
+      </select>
+    </div>
+  </div>
   <Map
     initialBounds={[5.87, 46.85, 15.04, 55.4]}
     minZoom={4}
@@ -47,6 +59,7 @@
       sourceId="boundaries"
       sourceLayer="boundaries"
       type="fill"
+      filter={["==", "kind", filter]}
       onmouseleave={handleMouseLeave}
       onmousemove={handleMouseMove}
       paint={{
@@ -55,11 +68,12 @@
       }}
     />
     <VectorLayer
-      id="outline"
       bind:hovered
+      id="outline"
       sourceId="boundaries"
       sourceLayer="boundaries"
       type="line"
+      filter={["==", "kind", filter]}
       paint={{
         "line-width": [
           "case",
@@ -71,8 +85,9 @@
         "line-opacity": 1,
       }}
     />
+
     <AttributionControl position="bottom-left" />
-    <NavigationControl position="top-right" />
+    <NavigationControl position="bottom-right" />
   </Map>
 </figure>
 
@@ -82,5 +97,33 @@
     flex-grow: 1;
     height: 100%;
     height: 100vh;
+    position: relative;
+    font-family: var(--swr-sans);
+  }
+  h1 {
+    font-weight: 600;
+    font-size: var(--fs-small-1);
+    margin-bottom: 0.5em;
+  }
+  .controls {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 100;
+    background: var(--color-pageFill);
+    padding: 0.5rem;
+    border: 1px solid black;
+  }
+  label {
+    display: block;
+    font-size: var(--fs-small-2);
+  }
+  select {
+    font-size: var(--fs-small-2);
+  }
+  .input {
+    display: flex;
+    flex-flow: column;
+    gap: 0.2em;
   }
 </style>
