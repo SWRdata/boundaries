@@ -50,10 +50,10 @@ def run():
         )
 
         print(f"Processing {year} data ({i + 1}/{len(new_years)})... ")
-        print("Making geojson... ", end="")
+        print("Making geojson... ")
         res = process_geometry(input_path)
         res.to_file(geojson_path)
-        print(f"wrote to {geojson_path}")
+        print(f"Wrote GeoJSON to {geojson_path}")
 
         print("Making versatiles...")
         make_versatiles(geojson_path, versatiles_path)
@@ -61,6 +61,7 @@ def run():
         # print(f"Uploading to GCS ({output_path})... ", end="")
         # res.to_file(output_path)
         # print("done")
+
 
 
 run()
