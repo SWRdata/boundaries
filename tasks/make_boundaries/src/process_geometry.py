@@ -15,9 +15,8 @@ def process_geometry(input_path: str) -> gp.GeoDataFrame:
     country["id"] = country["OBJID"]
     country["kind"] = "staat"
     country_processed = country.loc[country["OBJID"] == "DEBKGVG200000CKM"][output_cols]
-
-    print(f"done ({country_processed.shape[0]} geom)")
     assert country_processed.shape[0] == 1
+    print(f"done ({country_processed.shape[0]} geom)")
 
     # Admin 1
     print("Land... ", end="")
@@ -25,9 +24,8 @@ def process_geometry(input_path: str) -> gp.GeoDataFrame:
     laender["id"] = laender["OBJID"]
     laender["kind"] = "land"
     laender_processed = laender.loc[laender["GF"] == 4][output_cols]
-
-    print(f"done ({laender_processed.shape[0]} geoms)")
     assert laender_processed.shape[0] == 16
+    print(f"done ({laender_processed.shape[0]} geoms)")
 
     # Admin 2
     print("Kreis... ", end="")
@@ -35,9 +33,8 @@ def process_geometry(input_path: str) -> gp.GeoDataFrame:
     kreise["id"] = kreise["OBJID"]
     kreise["kind"] = "kreis"
     kreise_processed = kreise.loc[kreise["GF"] == 4][output_cols]
-
     print(f"done ({kreise_processed.shape[0]} geoms)")
-    
+
     # Admin 4
     print("Gemeinde... ", end="")
     gemeinden = gp.read_file(f"zip://{input_path}!{fp}/VG250_GEM.shp")
@@ -46,4 +43,17 @@ def process_geometry(input_path: str) -> gp.GeoDataFrame:
     gemeinden_processed = gemeinden.loc[gemeinden["GF"] == 4][output_cols]
     print(f"done ({gemeinden_processed.shape[0]} geoms)")
 
-    return gp.GeoDataFrame(pd.concat([country_processed, laender_processed, kreise_processed, gemeinden_processed])).to_crs("wgs84")
+    return (
+        gp.GeoDataFrame(
+            pd.concat(
+                [
+                    country_processed,
+                    laender_processed,
+                    kreise_processed,
+                    gemeinden_processed,
+                ]
+            )
+        )
+        .to_crs("wgs84")
+        .make_valid()
+    )
