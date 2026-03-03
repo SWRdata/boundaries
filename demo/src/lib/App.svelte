@@ -14,7 +14,7 @@
 
   const tileUrl = dev
     ? `http://127.0.0.1:8080/tiles/boundaries/{z}/{x}/{y}?dt=${Date.now()}`
-    : `https://static.datenhub.net/data/boundaries/boundaries_2025_01-01.versatiles?{z}/{x}/{y}`;
+    : `https://static.datenhub.net/data/boundaries/boundaries_2025_01-01.versatiles?{z}/{x}/{y}?dt=${Date.now()}`;
 
   let hoverCoords = $state([]);
 
