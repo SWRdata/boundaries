@@ -22,7 +22,7 @@
 	const handleMouseLeave = (e) => {
 		hovered = null
 	}
-	let filter = $state('land')
+	let filter = $state(levels[1])
 	let date = $state(dates[0])
 </script>
 
