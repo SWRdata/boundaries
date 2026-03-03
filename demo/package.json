@@ -24,6 +24,6 @@
 		"vitest": "^3.0.8"
 	},
 	"dependencies": {
-		"@swr-data-lab/components": "^2.43.0"
+		"@swr-data-lab/components": "^2.44.0"
 	}
 }
