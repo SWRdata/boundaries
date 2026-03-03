@@ -31,7 +31,8 @@
 
 <figure class="container">
 	<div class="controls">
-		<h1>SWRDL Boundaries</h1>
+		<span class="eyebrow">SWR Data Lab</span>
+		<h1>Boundaries</h1>
 		<form action="">
 			<div class="input">
 				<label for="date-select">Stand</label>
@@ -42,7 +43,7 @@
 				</select>
 			</div>
 			<div class="input">
-				<label for="level-select">Level</label>
+				<label for="level-select">OSM admin level</label>
 				<select name="level-select" id="" bind:value={filter}>
 					{#each levels as l}
 						<option value={l}>{l}</option>
@@ -137,15 +138,20 @@
 		position: relative;
 		font-family: var(--swr-sans);
 	}
+	.eyebrow {
+		font-size: var(--fs-small-3);
+		display: block;
+	}
 	h1 {
-		font-weight: 600;
-		font-size: var(--fs-small-1);
+		font-weight: 700;
+		font-size: var(--fs-large-1);
 		margin-bottom: 0.5em;
 	}
 	.controls {
 		position: absolute;
 		top: 0.5rem;
 		left: 0.5rem;
+		min-width: 10em;
 		z-index: 100;
 		background: var(--color-pageFill);
 		padding: 0.75rem;
@@ -157,17 +163,18 @@
 	form {
 		display: flex;
 		flex-flow: column;
-		gap: 0.5em;
+		gap: 0.75em;
 	}
 	select {
 		background: transparent;
-		padding: 0.15rem 0.4rem;
+		padding: 0.2rem 0.45rem;
 		border: 1px solid gray;
 		border-radius: 2px;
 	}
 	label {
 		display: block;
 		font-size: var(--fs-small-3);
+		margin-bottom: 0.1em;
 	}
 	select {
 		font-size: var(--fs-small-2);
