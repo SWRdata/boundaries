@@ -7,10 +7,12 @@ def make_versatiles(input_path: str, output_path: str):
     subprocess.run(
         [
             "tippecanoe",
-            "-n",
+            "--name",
             "SWRDL Boundaries",
+            "--attribution",
+            "kjsdhf",
             "--layer",
-            "boundaries",
+            "administrative",
             "--low-detail=10",
             "-zg",
             "--generate-ids",
