@@ -24,6 +24,7 @@ def process_geometry(input_path: str) -> gp.GeoDataFrame:
     laender = gp.read_file(f"zip://{input_path}!{fp}/VG250_LAN.shp")
     laender["id"] = laender["OBJID"]
     laender["admin"] = 4
+    laender["land"] = laender["SN_L"]
     laender_processed = laender.loc[laender["GF"] == 4]
     assert laender_processed.shape[0] == 16
     print(f"done ({laender_processed.shape[0]} geoms)")
