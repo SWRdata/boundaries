@@ -7,14 +7,16 @@ def make_versatiles(input_path: str, output_path: str):
     subprocess.run(
         [
             "tippecanoe",
-            "-l",
+            "-n",
+            "SWRDL Boundaries",
+            "--layer",
             "boundaries",
             "--low-detail=10",
             "-zg",
             "--generate-ids",
             "--extend-zooms-if-still-dropping",
             "--coalesce-densest-as-needed",
-            "-f",
+            "--force",
             "-o",
             mbtiles_path,
             input_path,

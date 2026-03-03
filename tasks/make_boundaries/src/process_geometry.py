@@ -14,7 +14,7 @@ def process_geometry(input_path: str) -> gp.GeoDataFrame:
     country = gp.read_file(f"zip://{input_path}!{fp}/VG250_STA.shp")
     country["id"] = country["OBJID"]
     country["kind"] = "staat"
-    country_processed = country.loc[country["OBJID"] == "DEBKGVG200000CKM"][output_cols]
+    country_processed = country.loc[country["OBJID"] == "DEBKGVG200000CKM"]
     assert country_processed.shape[0] == 1
     print(f"done ({country_processed.shape[0]} geom)")
 
@@ -23,7 +23,7 @@ def process_geometry(input_path: str) -> gp.GeoDataFrame:
     laender = gp.read_file(f"zip://{input_path}!{fp}/VG250_LAN.shp")
     laender["id"] = laender["OBJID"]
     laender["kind"] = "land"
-    laender_processed = laender.loc[laender["GF"] == 4][output_cols]
+    laender_processed = laender.loc[laender["GF"] == 4]
     assert laender_processed.shape[0] == 16
     print(f"done ({laender_processed.shape[0]} geoms)")
 
@@ -32,7 +32,7 @@ def process_geometry(input_path: str) -> gp.GeoDataFrame:
     kreise = gp.read_file(f"zip://{input_path}!{fp}/VG250_KRS.shp")
     kreise["id"] = kreise["OBJID"]
     kreise["kind"] = "kreis"
-    kreise_processed = kreise.loc[kreise["GF"] == 4][output_cols]
+    kreise_processed = kreise.loc[kreise["GF"] == 4]
     print(f"done ({kreise_processed.shape[0]} geoms)")
 
     # Admin 4
@@ -40,20 +40,16 @@ def process_geometry(input_path: str) -> gp.GeoDataFrame:
     gemeinden = gp.read_file(f"zip://{input_path}!{fp}/VG250_GEM.shp")
     gemeinden["id"] = gemeinden["OBJID"]
     gemeinden["kind"] = "gemeinde"
-    gemeinden_processed = gemeinden.loc[gemeinden["GF"] == 4][output_cols]
+    gemeinden_processed = gemeinden.loc[gemeinden["GF"] == 4]
     print(f"done ({gemeinden_processed.shape[0]} geoms)")
 
-    return (
-        gp.GeoDataFrame(
-            pd.concat(
-                [
-                    country_processed,
-                    laender_processed,
-                    kreise_processed,
-                    gemeinden_processed,
-                ]
-            )
+    return gp.GeoDataFrame(
+        pd.concat(
+            [
+                country_processed,
+                laender_processed,
+                kreise_processed,
+                gemeinden_processed,
+            ]
         )
-        .to_crs("wgs84")
-        .make_valid()
-    )
+    )[output_cols].to_crs("wgs84")

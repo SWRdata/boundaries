@@ -14,12 +14,11 @@
 
   const tileUrl = dev
     ? `http://127.0.0.1:8080/tiles/boundaries/{z}/{x}/{y}?dt=${Date.now()}`
-    : `https://static.datenhub.net/data/p109_besser_wohnen/admin_boundaries.versatiles?{z}/{x}/{y}`;
+    : `https://static.datenhub.net/data/boundaries/boundaries_2025_01-01.versatiles?{z}/{x}/{y}`;
 
   let hoverCoords = $state([]);
 
   let tooltipCoordinates = $derived(hovered ? hoverCoords : [0, 0]);
-  let tooltipData = $derived(selected?.properties);
 
   let hovered = $state();
 
@@ -28,7 +27,6 @@
     hoverCoords = e.lngLat;
   };
   const handleMouseLeave = (e) => {
-    console.log(hovered);
     hovered = null;
   };
   let filter = $state("land");
@@ -46,6 +44,9 @@
         <option value="gemeinde">Gemeinden</option>
       </select>
     </div>
+    <p class="footer">
+      <a href="#1">Github</a>
+    </p>
   </div>
   <Map
     initialBounds={[5.87, 46.85, 15.04, 55.4]}
@@ -57,8 +58,7 @@
     projection={{ type: "globe" }}
     showDebug
   >
-    <VectorTileSource id="boundaries" url={tileUrl} />
-
+    <VectorTileSource id="boundaries" url={tileUrl} maxzoom={15} />
     <VectorLayer
       id="fill"
       sourceId="boundaries"
@@ -79,7 +79,7 @@
           tokens.shades.teal.light1,
           tokens.shades.blue.light3,
         ],
-        "fill-opacity": 0.2,
+        "fill-opacity": 0.25,
       }}
     />
     <VectorLayer
@@ -93,10 +93,27 @@
         "line-width": [
           "case",
           ["any", ["boolean", ["feature-state", "hovered"], false]],
-          1.5,
+          1.75,
           0.75,
         ],
-        "line-color": "black",
+        "line-color": [
+          "case",
+          ["any", ["boolean", ["feature-state", "hovered"], false]],
+          "black",
+          tokens.shades.gray.base,
+        ],
+        "line-opacity": 1,
+      }}
+    />
+    <VectorLayer
+      id="outline-state"
+      sourceId="boundaries"
+      sourceLayer="boundaries"
+      type="line"
+      filter={["==", "kind", "staat"]}
+      paint={{
+        "line-width": 1.5,
+        "line-color": tokens.shades.gray.dark2,
         "line-opacity": 1,
       }}
     />
@@ -189,6 +206,14 @@
         border-bottom: 0;
         padding-bottom: 0;
       }
+    }
+  }
+  .footer {
+    font-size: var(--fs-small-3);
+    margin-top: 1.5em;
+    color: var(--gray-dark-1);
+    a {
+      text-decoration: none;
     }
   }
 </style>

@@ -1,0 +1,14 @@
+server:
+   ip: 127.0.0.1
+   port: 8080
+
+tiles:
+   - name: boundaries
+     src: tmp/processed/boundaries_2025_01-01.versatiles
+
+cors:
+   allowed_origins:
+      - "*"
+
+static:
+  - src: ./frontend-dev.tar.gz
