@@ -8,13 +8,12 @@ import pandas as pd
 
 def process_geometry(input_path: str) -> gp.GeoDataFrame:
     fp = "vg250_01-01.utm32s.shape.ebenen/vg250_ebenen_0101"
-    output_cols = ["ARS", "GEN", "id", "admin", "land", "geometry"]
+    output_cols = ["id", "ars", "land", "name", "admin_level", "geometry"]
 
     # Admin 2
     print("Staat... ", end="")
     country = gp.read_file(f"zip://{input_path}!{fp}/VG250_STA.shp")
-    country["id"] = country["OBJID"]
-    country["admin"] = 2
+    country["admin_level"] = 2
     country_processed = country.loc[country["OBJID"] == "DEBKGVG200000CKM"]
     assert country_processed.shape[0] == 1
     print(f"done ({country_processed.shape[0]} geom)")
@@ -22,8 +21,7 @@ def process_geometry(input_path: str) -> gp.GeoDataFrame:
     # Admin 4
     print("Land... ", end="")
     laender = gp.read_file(f"zip://{input_path}!{fp}/VG250_LAN.shp")
-    laender["id"] = laender["OBJID"]
-    laender["admin"] = 4
+    laender["admin_level"] = 4
     laender["land"] = laender["SN_L"]
     laender_processed = laender.loc[laender["GF"] == 4]
     assert laender_processed.shape[0] == 16
@@ -32,8 +30,7 @@ def process_geometry(input_path: str) -> gp.GeoDataFrame:
     # Admin 6
     print("Kreis... ", end="")
     kreise = gp.read_file(f"zip://{input_path}!{fp}/VG250_KRS.shp")
-    kreise["id"] = kreise["OBJID"]
-    kreise["admin"] = 6
+    kreise["admin_level"] = 6
     kreise["land"] = kreise["SN_L"]
     kreise_processed = kreise.loc[kreise["GF"] == 4]
     print(f"done ({kreise_processed.shape[0]} geoms)")
@@ -41,13 +38,12 @@ def process_geometry(input_path: str) -> gp.GeoDataFrame:
     # Admin 8
     print("Gemeinde... ", end="")
     gemeinden = gp.read_file(f"zip://{input_path}!{fp}/VG250_GEM.shp")
-    gemeinden["id"] = gemeinden["OBJID"]
-    gemeinden["admin"] = 8
+    gemeinden["admin_level"] = 8
     gemeinden["land"] = gemeinden["SN_L"]
     gemeinden_processed = gemeinden.loc[gemeinden["GF"] == 4]
     print(f"done ({gemeinden_processed.shape[0]} geoms)")
 
-    return gp.GeoDataFrame(
+    res = gp.GeoDataFrame(
         pd.concat(
             [
                 country_processed,
@@ -56,4 +52,10 @@ def process_geometry(input_path: str) -> gp.GeoDataFrame:
                 gemeinden_processed,
             ]
         )
-    )[output_cols].to_crs("wgs84")
+    )
+
+    res["name"] = res["GEN"]
+    res["ars"] = res["ARS"]
+    res["id"] = res["OBJID"]
+
+    return res[output_cols].to_crs("wgs84")

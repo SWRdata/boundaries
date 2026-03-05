@@ -11,16 +11,18 @@
     tokens,
     AttributionControl,
   } from "@swr-data-lab/components";
+  import Sidebar from "./Sidebar.svelte";
 
   const tileUrl = dev
-    ? `http://localhost:8080/tiles/boundaries/tiles.json?t=${Date.now()}`
+    ? // ? // ? `http://localhost:8080/tiles/boundaries/tiles.json?t=${2}`
+      `http://localhost:8080/tiles/boundaries/{z}/{x}/{y}?dt=${Date.now()}`
     : `https://static.datenhub.net/data/boundaries/boundaries_2025_01-01.versatiles?{z}/{x}/{y}?dt=${Date.now()}`;
 
   const levels = [2, 4, 6, 8];
-  const dates = ["2025-01-01"];
+  const dates = ["2024-01-01", "2025-01-01"];
 
   let filter = $state(levels[2]);
-  let date = $state(dates[0]);
+  let date = $state(dates[dates.length - 1]);
   let hoverCoords = $state([]);
   let hovered = $state();
   let tooltipCoordinates = $derived(hovered ? hoverCoords : [0, 0]);
@@ -42,35 +44,11 @@
   };
 </script>
 
-<figure class="container">
-  <div class="controls">
-    <span class="eyebrow">SWR Data Lab</span>
-    <h1>Boundaries</h1>
-    <form action="">
-      <div class="input">
-        <label for="date-select">Stand</label>
-        <select name="date-select" id="" bind:value={date}>
-          {#each dates as d}
-            <option value={d}>{d}</option>
-          {/each}
-        </select>
-      </div>
-      <div class="input">
-        <label for="level-select">OSM admin level</label>
-        <select name="level-select" id="" bind:value={filter}>
-          {#each levels as l}
-            <option value={l}>{l}</option>
-          {/each}
-        </select>
-      </div>
-    </form>
-    <p class="footer">
-      <a href="#1">Github</a>
-    </p>
-  </div>
+<main class="container">
+  <Sidebar {date} {dates} {filter} {levels} />
   <Map
-    initialBounds={[5.87, 46.85, 15.04, 55.4]}
-    minZoom={4}
+    initialBounds={[5.86625, 47.270124, 15.041816, 55.058778]}
+    initialLocation={{ zoom: 5.4 }}
     style={SWRDataLabLight({
       admin: { show: false },
     })}
@@ -78,13 +56,13 @@
     projection={{ type: "globe" }}
     showDebug
   >
-    <VectorTileSource id="boundaries" url={tileUrl} maxzoom={15} />
+    <VectorTileSource id="boundaries" tiles={[tileUrl]} maxzoom={15} />
     <VectorLayer
       id="fill"
       sourceId="boundaries"
       sourceLayer="administrative"
       type="fill"
-      filter={["==", "admin", filter]}
+      filter={["==", "admin_level", filter]}
       onmouseleave={handleMouseLeave}
       onmousemove={handleMouseMove}
       paint={{
@@ -107,7 +85,7 @@
       sourceId="boundaries"
       sourceLayer="administrative"
       type="line"
-      filter={["==", "admin", filter]}
+      filter={["==", "admin_level", filter]}
       paint={{
         "line-width": [
           "case",
@@ -129,7 +107,7 @@
       sourceId="boundaries"
       sourceLayer="administrative"
       type="line"
-      filter={["==", "admin", 2]}
+      filter={["==", "admin_level", 2]}
       paint={{
         "line-width": 1.5,
         "line-color": tokens.shades.gray.dark2,
@@ -155,7 +133,7 @@
     <AttributionControl position="bottom-left" />
     <NavigationControl position="bottom-right" />
   </Map>
-</figure>
+</main>
 
 <style lang="scss">
   .container {
@@ -166,52 +144,7 @@
     position: relative;
     font-family: var(--swr-sans);
   }
-  .eyebrow {
-    font-size: var(--fs-small-3);
-    display: block;
-  }
-  h1 {
-    font-weight: 700;
-    font-size: var(--fs-large-1);
-    margin-bottom: 0.5em;
-  }
-  .controls {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    min-width: 10em;
-    z-index: 100;
-    background: var(--color-pageFill);
-    padding: 0.75rem;
-    border-radius: 3px;
-    padding-right: 1.25rem;
-    box-shadow: 0px 1px 3px rgba(black, 0.1);
-    border: 1px solid rgba(black, 0.75);
-  }
-  form {
-    display: flex;
-    flex-flow: column;
-    gap: 0.75em;
-  }
-  select {
-    background: transparent;
-    padding: 0.2rem 0.45rem;
-    border: 1px solid gray;
-    border-radius: 2px;
-  }
-  label {
-    display: block;
-    font-size: var(--fs-small-3);
-    margin-bottom: 0.1em;
-  }
-  select {
-    font-size: var(--fs-small-2);
-  }
-  .input {
-    display: flex;
-    flex-flow: column;
-    gap: 0.2em;
-  }
+
   .tooltip-body {
     font-family: monospace;
     border-spacing: 0;
@@ -236,14 +169,6 @@
         border-bottom: 0;
         padding-bottom: 0;
       }
-    }
-  }
-  .footer {
-    font-size: var(--fs-small-3);
-    margin-top: 1.5em;
-    color: var(--gray-dark-1);
-    a {
-      text-decoration: none;
     }
   }
 </style>
