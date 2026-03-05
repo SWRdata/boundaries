@@ -1,11 +1,18 @@
 <script>
   let { date, dates, filter, levels } = $props();
+
+  const usage = `
+map.addSource("boundaries", {
+    type: "vector",
+    url: "https://tiles.datenhub.net/tiles/boundaries/tiles.json"
+});`
 </script>
 
 <div class="container">
   <span class="eyebrow">SWR Data Lab</span>
   <h1>Boundaries</h1>
-  <form action="">
+
+  <form>
     <div class="input">
       <label for="date-select">Stand</label>
       <select name="date-select" id="" bind:value={date}>
@@ -23,6 +30,13 @@
       </select>
     </div>
   </form>
+
+  <details open>
+    <summary>Usage</summary>
+    <code>
+    <pre>{usage.trim()}</pre>
+</code>
+  </details>
   <p class="footer">
     <a href="#1">Github</a>
   </p>
@@ -42,7 +56,8 @@
     position: absolute;
     top: 0.5rem;
     left: 0.5rem;
-    min-width: 18em;
+    right: .5rem;
+    max-width: 20em;
     z-index: 100;
     background: var(--color-pageFill);
     padding: 0.75rem;
@@ -54,12 +69,21 @@
   form {
     display: flex;
     gap: 0.5em;
+    margin-bottom: .5em;;
   }
   select {
     background: transparent;
     padding: 0.2rem 0.45rem;
     border: 1px solid var(--gray-light-1);
     border-radius: 2px;
+  }
+  pre {
+    overflow-x: scroll;
+    border: 1px solid var(--gray-light-1);
+    padding: .5em;
+  }
+  code {
+    font-family: monospace;
   }
   label {
     display: block;
