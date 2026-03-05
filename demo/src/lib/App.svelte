@@ -13,7 +13,7 @@
   } from "@swr-data-lab/components";
 
   const tileUrl = dev
-    ? `http://127.0.0.1:8080/tiles/boundaries/{z}/{x}/{y}?dt=${Date.now()}`
+    ? `http://127.0.0.1:8080/tiles/boundaries/{z}/{x}/{y}/?dt=${Date.now()}`
     : `https://static.datenhub.net/data/boundaries/boundaries_2025_01-01.versatiles?{z}/{x}/{y}?dt=${Date.now()}`;
 
   const levels = [2, 4, 6, 8];
@@ -78,7 +78,11 @@
     projection={{ type: "globe" }}
     showDebug
   >
-    <VectorTileSource id="boundaries" tiles={[tileUrl]} maxzoom={15} />
+    <VectorTileSource
+      id="boundaries"
+      url="http://localhost:8080/tiles/boundaries/tiles.json"
+      maxzoom={15}
+    />
     <VectorLayer
       id="fill"
       sourceId="boundaries"

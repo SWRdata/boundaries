@@ -1,20 +1,21 @@
 import subprocess
 
 
-def make_versatiles(input_path: str, output_path: str):
+def make_versatiles(input_path: str, output_path: str, year: int):
     mbtiles_path = output_path.replace(".versatiles", ".mbtiles")
 
     subprocess.run(
         [
             "tippecanoe",
             "--name",
-            "SWRDL Boundaries",
-            "--attribution",
-            "kjsdhf",
+            "SWR Data Lab Boundaries",
+            f"--description=German admin boundaries (VG250) as of {year}-01-01",
+            f"--attribution=© BKG ({year}) dl-de/by-2-0",
             "--layer",
             "administrative",
             "--low-detail=10",
-            "-zg",
+            "--minimum-zoom=0",
+            "--maximum-zoom=8",
             "--generate-ids",
             "--extend-zooms-if-still-dropping",
             "--coalesce-densest-as-needed",

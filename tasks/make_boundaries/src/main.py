@@ -55,7 +55,7 @@ def run():
         print(f"Wrote GeoJSON to {geojson_path}")
 
         print("Making versatiles...")
-        make_versatiles(geojson_path, versatiles_path)
+        make_versatiles(geojson_path, versatiles_path, year)
 
         # print(f"Uploading to GCS ({output_path})... ", end="")
         # res.to_file(output_path)
