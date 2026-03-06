@@ -14,16 +14,16 @@ const map = new maplibregl.Map({
     center: [50, 9]
 });
 
-map.on("load", ()=> {
+map.on("load", () => {
   map.addSource("boundaries", {
     type: "vector",
     tiles: ["https://tiles.datenhub.net/tiles/boundaries/{z}/{x}/{y}"]
     attribution: "© BKG (${date.slice(0, 4)}) dl-de/by-2-0"
   });
   map.addLayer({
-    id: 'states',
-    type: 'line',
-    source: 'boundaries',
+    id: "states",
+    type: "line",
+    source: "boundaries",
     sourceLayer: "administrative"
     filter: ["==", "admin_level", ${filter}]
     paint: {"line-color": "red"}
@@ -59,7 +59,7 @@ map.on("load", ()=> {
 
 	<form>
 		<div class="input">
-			<label for="date-select">Stand</label>
+			<label for="date-select">Date</label>
 			<select name="date-select" id="" bind:value={date}>
 				{#each dates as d}
 					<option value={d}>{d}</option>
@@ -172,6 +172,9 @@ map.on("load", ()=> {
 	.code {
 		border: 1px solid var(--gray-light-1);
 		font-family: monospace;
+	}
+	:global(code) {
+		scrollbar-width: thin;
 	}
 	.footer {
 		font-size: var(--fs-small-3);
