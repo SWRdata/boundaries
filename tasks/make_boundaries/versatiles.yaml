@@ -10,5 +10,8 @@ cors:
    allowed_origins:
       - "*"
 
+extra_response_headers:
+  Cache-Control: "no-cache"
+
 static:
   - src: ./frontend-dev.tar.gz

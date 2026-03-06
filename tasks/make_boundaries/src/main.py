@@ -43,10 +43,12 @@ def run():
         input_path = os.path.join(
             raw_dir, str(year), "vg250_01-01.utm32s.shape.ebenen.zip"
         )
-        geojson_path = os.path.join(processed_dir, f"boundaries_{year}_01-01.geojson")
-        versatiles_path = os.path.join(
-            processed_dir, f"boundaries_{year}_01-01.versatiles"
-        )
+
+        geojson_filename = f"boundaries_{year}_01-01.geojson"
+        versatiles_filename = f"boundaries_{year}_01-01.versatiles"
+
+        geojson_path = os.path.join(processed_dir, geojson_filename)
+        versatiles_path = os.path.join(processed_dir, versatiles_filename)
 
         print(f"Processing {year} data ({i + 1}/{len(new_years)})... ")
         print("Making geojson... ")
@@ -58,9 +60,14 @@ def run():
         make_versatiles(geojson_path, versatiles_path, year)
         print(f"Wrote to {versatiles_path}")
 
-        print("Uploading to GCS... ", end="")
-        upload_blob(storage_client, geojson_path, gcs_bucket, gcs_path)
-        upload_blob(storage_client, versatiles_path, gcs_bucket, gcs_path)
+        print("Uploading to GCS...")
+        # upload_blob(storage_client, geojson_path, gcs_bucket, gcs_path)
+        upload_blob(
+            storage_client,
+            versatiles_path,
+            gcs_bucket,
+            f"{gcs_path}{versatiles_filename}",
+        )
         print("done")
 
 

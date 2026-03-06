@@ -10,4 +10,4 @@ def upload_blob(
     blob = bucket.blob(destination_path)
     blob.upload_from_filename(source_path)
 
-    print(f"File {source_path} uploaded to {destination_path}")
+    print(f"{source_path} uploaded to {destination_path}")
