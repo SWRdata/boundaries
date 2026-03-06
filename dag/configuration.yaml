@@ -1,0 +1,37 @@
+image_repo: europe-west3-docker.pkg.dev/swr-datalab-prod/etl-images-airflow-swr-data-lab
+
+dag_metadata:
+  description: 'Produces normalised geometry files of German administrative boundaries'
+  schedule_interval: '10 * * * *'
+  max_active_runs: 1
+  catchup: False
+  is_paused_upon_creation: True
+  start_date: 1 # days
+
+  default_args:
+    owner: airflow
+    depends_on_past: False
+    retries: 1
+    retry_delay: 3 # minutes
+
+dataplex_metadata:
+  dataset_id: null
+
+dag_env_vars: &dag_env_vars
+
+container_resource: &container_resource
+  requests:
+    cpu: 250m
+    memory: 500Mi
+  limits:
+    cpu: 500m
+    memory: 1000Mi
+
+dag_task_parameters:
+  - task_id: make_boundaries
+    image_suffix: make_boundaries
+    environment_variables:
+      <<: *dag_env_vars
+    container_resource:
+      <<: *container_resource
+    is_delete_operator_pod: False

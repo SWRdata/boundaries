@@ -1,0 +1,26 @@
+name: Build and deploy
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
+  # pull_request:
+  #   types: [opened, synchronize]
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  reuse-build-and-deploy-node-app:
+    uses: SWRData/workflows-swr-data-lab/.github/workflows/build_and_deploy_node_app.yml@main
+    with:
+      working_directory: 'demo'
+      full_repository: ${{ github.repository }}
+      branch: ${{ github.head_ref || github.ref_name }}
+      install_command: 'npm install -g npm && npm ci'
+      build_command: 'npm run build'
+      build_path: 'build'
+      node_version: 25
