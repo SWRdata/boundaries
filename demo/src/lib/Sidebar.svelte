@@ -3,7 +3,7 @@
   import typescript from "svelte-highlight/languages/typescript";
   import githubStyle from "svelte-highlight/styles/github";
 
-  let { date, dates, filter, levels } = $props();
+  let { date, dates, filter = $bindable(), levels } = $props();
 
   const usages = $derived({
     Javascript: `

@@ -44,7 +44,7 @@
 </script>
 
 <main class="container">
-  <Sidebar {date} {dates} {filter} {levels} />
+  <Sidebar {date} {dates} bind:filter {levels} />
   <Map
     initialBounds={[5.86625, 47.270124, 15.041816, 55.058778]}
     initialLocation={{ zoom: 5.4 }}
