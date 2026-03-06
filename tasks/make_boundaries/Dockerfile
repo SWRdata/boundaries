@@ -19,7 +19,7 @@ ENV UV_COMPILE_BYTECODE=1
 RUN apt-get update && apt-get install -y software-properties-common
 RUN add-apt-repository ppa:ubuntugis/ubuntugis-unstable && apt-get update
 
-RUN apt-get install -y libsqlite3-0 zlib1g libcurl4 gdal-bin
+RUN apt-get install -y curl libsqlite3-0 zlib1g libcurl4 gdal-bin
 
 COPY --from=tippecanoe-builder /tippecanoe-src/tippecanoe /bin
 COPY --from=tippecanoe-builder /tippecanoe-src/tile-join bin/
