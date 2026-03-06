@@ -17,8 +17,6 @@ dag_metadata:
 dataplex_metadata:
   dataset_id: null
 
-dag_env_vars: &dag_env_vars
-
 container_resource: &container_resource
   requests:
     cpu: 250m
@@ -30,8 +28,6 @@ container_resource: &container_resource
 dag_task_parameters:
   - task_id: make_boundaries
     image_suffix: make_boundaries
-    environment_variables:
-      <<: *dag_env_vars
     container_resource:
       <<: *container_resource
     is_delete_operator_pod: False
