@@ -95,8 +95,8 @@ map.on("load", () => {
 		{/each}
 	</ul>
 	<p class="footer">
-		<a href="https://github.com/SWRdata/boundaries">Docs 🡥</a>
-		<a href="https://github.com/SWRdata/components">Data Lab Components 🡥</a>
+		<a href="https://github.com/SWRdata/boundaries">Docs</a>
+		<a href="https://github.com/SWRdata/components">Data Lab Components</a>
 		<span>© {new Date().getFullYear()}</span>
 	</p>
 </div>
@@ -185,6 +185,7 @@ map.on("load", () => {
 		align-items: baseline;
 		a {
 			text-decoration: none;
+			color: var(--blue-dark-3);
 			&:hover,
 			&:focus-visible {
 				text-decoration: underline;
