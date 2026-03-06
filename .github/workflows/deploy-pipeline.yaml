@@ -2,11 +2,11 @@ name: Deploy pipeline
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches: [main]
-  #   paths:
-  #     - '**/dag/**'
-  #     - '**/tasks/**'
+  push:
+    branches: [main]
+    paths:
+      - '**/dag/**'
+      - '**/tasks/**'
 
 permissions:
   contents: write
