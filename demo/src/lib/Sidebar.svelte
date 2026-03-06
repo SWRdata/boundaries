@@ -160,8 +160,12 @@ map.on("load", () => {
 		list-style: none;
 		li {
 			border-bottom: 1px solid var(--gray-light-2);
+			&:has([open]) {
+				border-bottom: 0;
+			}
 		}
 	}
+
 	summary {
 		font-size: var(--fs-small-2);
 		padding: 0.5em 0;
@@ -170,7 +174,7 @@ map.on("load", () => {
 	}
 
 	.code {
-		border: 1px solid var(--gray-light-1);
+		border: 1px solid var(--gray-light-2);
 		font-family: monospace;
 	}
 	:global(code) {
@@ -181,7 +185,7 @@ map.on("load", () => {
 		margin-top: 1em;
 		color: var(--gray-dark-1);
 		display: flex;
-		gap: 1em;
+		gap: 0.75em;
 		align-items: baseline;
 		a {
 			text-decoration: none;
