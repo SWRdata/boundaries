@@ -96,7 +96,6 @@ map.on("load", () => {
   </ul>
   <p class="footer">
     <a href="https://github.com/SWRdata/boundaries">Docs</a>
-    <a href="https://github.com/SWRdata/components">Data Lab Components</a>
     <span>© {new Date().getFullYear()}</span>
   </p>
 </div>
