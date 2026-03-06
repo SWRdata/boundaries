@@ -14,6 +14,7 @@ def fetch_geometry(
     base_url: str,
     output_path: str,
 ) -> list[int]:
+
     print("Fetching existing files...")
     existing_files = [
         b.name.replace(gcs_path, "")
@@ -22,11 +23,12 @@ def fetch_geometry(
         )
         if b.name != gcs_path
     ]
-    print(f"Found {len(existing_files)}: {existing_files}")
 
     existing_years = {
         int(re.search(r"(?:\D+_)(.{4})(?:.+)", f).group(1)) for f in existing_files
     }
+
+    print(f"Found {len(existing_files)}: {existing_files}")
 
     # 2. Check if new data was published and download it
     print("Fetching BKG index... ")

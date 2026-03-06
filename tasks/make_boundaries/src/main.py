@@ -1,5 +1,4 @@
 import os
-from subprocess import CalledProcessError
 
 from dotenv import load_dotenv
 from google.cloud import storage
@@ -7,6 +6,7 @@ from google.cloud import storage
 from fetch_geometry import fetch_geometry
 from make_versatiles import make_versatiles
 from process_geometry import process_geometry
+from upload_blob import upload_blob
 
 base_url = "https://daten.gdz.bkg.bund.de/produkte/vg/vg250_ebenen_0101/"
 gcs_bucket = "datenhub-net-static"
@@ -21,7 +21,7 @@ skip_fetch = True
 
 def run():
     load_dotenv()
-    # cwd = os.path.dirname(os.path.realpath(__file__))
+
     os.makedirs(os.path.dirname(raw_dir), exist_ok=True)
     os.makedirs(os.path.dirname(processed_dir), exist_ok=True)
 
@@ -52,14 +52,16 @@ def run():
         print("Making geojson... ")
         res = process_geometry(input_path)
         res.to_file(geojson_path)
-        print(f"Wrote GeoJSON to {geojson_path}")
+        print(f"Wrote to {geojson_path}")
 
         print("Making versatiles...")
         make_versatiles(geojson_path, versatiles_path, year)
+        print(f"Wrote to {versatiles_path}")
 
-        # print(f"Uploading to GCS ({output_path})... ", end="")
-        # res.to_file(output_path)
-        # print("done")
+        print("Uploading to GCS... ", end="")
+        upload_blob(storage_client, geojson_path, gcs_bucket, gcs_path)
+        upload_blob(storage_client, versatiles_path, gcs_bucket, gcs_path)
+        print("done")
 
 
 run()
