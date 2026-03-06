@@ -1,8 +1,8 @@
 image_repo: europe-west3-docker.pkg.dev/swr-datalab-prod/etl-images-airflow-swr-data-lab
 
 dag_metadata:
-  description: 'Produces normalised geometry files of German administrative boundaries'
-  schedule_interval: '10 * * * *'
+  description: 'Produces normalised geometry for Data Lab Boundaries'
+  schedule_interval: '0 3 1 * *'
   max_active_runs: 1
   catchup: False
   is_paused_upon_creation: True
