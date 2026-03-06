@@ -18,16 +18,12 @@ jobs:
     outputs:
       is_initial: ${{ steps.check_init.outputs.is_initial }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@v3
       - name: Check if this is the initial commit and commit message is "Initial commit"
         id: check_init
         run: |
           count=$(git rev-list --count HEAD)
           message=$(git log -1 --pretty=%B)
-          echo "Commit count: $count"
-          echo "Commit message: '$message'"
           if [ "$count" -eq 1 ] && [ "$message" = "Initial commit" ]; then
             echo "is_initial=true" >> $GITHUB_OUTPUT
           else
