@@ -1,4 +1,4 @@
-name: Deploy Data Pipeline
+name: Deploy pipeline
 
 on:
   workflow_dispatch:
