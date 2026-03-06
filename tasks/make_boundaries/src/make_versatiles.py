@@ -7,6 +7,7 @@ def make_versatiles(input_path: str, output_path: str, year: int):
     subprocess.run(
         [
             "tippecanoe",
+            "--no-progress-indicator",
             "--name",
             "SWR Data Lab Boundaries",
             f"--description=Geographic boundary data for Germany as of {year}-01-01",
@@ -27,7 +28,14 @@ def make_versatiles(input_path: str, output_path: str, year: int):
     ).check_returncode()
 
     subprocess.run(
-        ["versatiles", "convert", "--compress=brotli", mbtiles_path, output_path]
+        [
+            "versatiles",
+            "convert",
+            "--quiet",
+            "--compress=brotli",
+            mbtiles_path,
+            output_path,
+        ]
     ).check_returncode()
 
     subprocess.run(["rm", mbtiles_path]).check_returncode()
