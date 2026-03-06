@@ -1,4 +1,4 @@
-# Boundaries
+# SWR Data Lab Boundaries
 
 Geographic boundary data for Germany in the versatiles format.
 
@@ -28,7 +28,9 @@ Geographic boundary data for Germany in the versatiles format.
 ### Tile generation
 
 - Be on Mac or Linux because `tippecanoe` is only available on those platforms
-- `cd tasks/make_boundaries && uv sync && uv run src/main.py`
+- `cd tasks/make_boundaries && uv sync` to install Python dependencies
+- `uv run src/main.py` to run the tile generation pipeline
+- `versatiles serve -c versatiles.yaml` to start a local tile server
 
 ### Demo page
 
