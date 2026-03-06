@@ -15,7 +15,7 @@ Geographic boundary data for Germany in the versatiles format.
 
 | Field   | Description                                                                                                                   |
 | ------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `id`    | Unique ID to the tileset (sequential)                                                                                         |
+| `id`    | Sequential ID unique to the tileset                                                                                           |
 | `ars`   | 12-digit [Amtlicher Regionalschlüssel](https://de.wikipedia.org/wiki/Amtlicher_Gemeindeschl%C3%BCssel#Regionalschl%C3%BCssel) |
 | `land`  | Two-digit ID indicating the Bundesland containing the feature or the feature itself                                           |
 | `level` | Administrative hierarchy level; lower levels represent larger feautres                                                        |

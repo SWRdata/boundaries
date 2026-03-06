@@ -95,8 +95,9 @@ map.on("load", ()=> {
 		{/each}
 	</ul>
 	<p class="footer">
-		<a href="https://github.com/SWRdata/boundaries">Github 🡥</a>
+		<a href="https://github.com/SWRdata/boundaries">Docs 🡥</a>
 		<a href="https://github.com/SWRdata/components">Data Lab Components 🡥</a>
+		<span>© {new Date().getFullYear()}</span>
 	</p>
 </div>
 
@@ -122,7 +123,7 @@ map.on("load", ()=> {
 	}
 	h1 {
 		font-weight: 700;
-		font-size: var(--fs-large-1);
+		font-size: var(--fs-large-2);
 		margin-bottom: 0.5em;
 	}
 
@@ -165,7 +166,9 @@ map.on("load", ()=> {
 		font-size: var(--fs-small-2);
 		padding: 0.5em 0;
 		cursor: pointer;
+		user-select: none;
 	}
+
 	.code {
 		border: 1px solid var(--gray-light-1);
 		font-family: monospace;
@@ -176,6 +179,7 @@ map.on("load", ()=> {
 		color: var(--gray-dark-1);
 		display: flex;
 		gap: 1em;
+		align-items: baseline;
 		a {
 			text-decoration: none;
 			&:hover,
