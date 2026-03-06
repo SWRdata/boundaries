@@ -31,7 +31,7 @@ map.on("load", ()=> {
 })
 `,
 		'Data Lab Components (Svelte)': `
-<Map>
+<Map style={SWRDataLabLight()}>
   <VectorTileSource
     id="boundaries"
     url="https://tiles.datenhub.net/tiles/boundaries/tiles.json">
