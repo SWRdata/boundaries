@@ -14,9 +14,9 @@
   import Sidebar from "./Sidebar.svelte";
 
   const tileUrl = dev
-    ? // ? // ? `http://localhost:8080/tiles/boundaries/tiles.json?t=${2}`
-      `http://localhost:8080/tiles/boundaries/{z}/{x}/{y}?dt=${Date.now()}`
-    : `https://static.datenhub.net/data/boundaries/boundaries_2025_01-01.versatiles?{z}/{x}/{y}?dt=${Date.now()}`;
+    ? `http://localhost:8080/tiles/boundaries/tiles.json`
+    : // `http://localhost:8080/tiles/boundaries/{z}/{x}/{y}?dt=${Date.now()}`
+      `https://static.datenhub.net/data/boundaries/boundaries_2025_01-01.versatiles?{z}/{x}/{y}?dt=${Date.now()}`;
 
   const levels = [2, 4, 6, 8];
   const dates = ["2024-01-01", "2025-01-01"];
@@ -56,7 +56,7 @@
     projection={{ type: "globe" }}
     showDebug
   >
-    <VectorTileSource id="boundaries" tiles={[tileUrl]} maxzoom={15} />
+    <VectorTileSource id="boundaries" url={tileUrl} maxzoom={15} />
     <VectorLayer
       id="fill"
       sourceId="boundaries"
