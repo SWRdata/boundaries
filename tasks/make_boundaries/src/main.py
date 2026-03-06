@@ -9,14 +9,13 @@ from process_geometry import process_geometry
 from upload_blob import upload_blob
 
 base_url = "https://daten.gdz.bkg.bund.de/produkte/vg/vg250_ebenen_0101/"
+gcs_project = "swr-data-1"
 gcs_bucket = "datenhub-net-static"
 gcs_path = "data/boundaries/"
 min_year = 2024
 
 raw_dir = "./tmp/raw/"
 processed_dir = "./tmp/processed/"
-
-skip_fetch = True
 
 
 def run():
@@ -25,18 +24,18 @@ def run():
     os.makedirs(os.path.dirname(raw_dir), exist_ok=True)
     os.makedirs(os.path.dirname(processed_dir), exist_ok=True)
 
-    storage_client = storage.Client(project="swr-data-1")
+    storage_client = storage.Client(project=gcs_project)
 
     # 1. List existing files
-    # new_years = fetch_geometry(
-    #     min_year, storage_client, gcs_bucket, gcs_path, base_url, raw_dir
-    # )
+    new_years = fetch_geometry(
+        min_year, storage_client, gcs_bucket, gcs_path, base_url, raw_dir
+    )
 
-    # if len(new_years) == 0:
-    #     print("No new data found, exiting")
-    #     return
+    if len(new_years) == 0:
+        print("No new data found, exiting")
+        return
 
-    new_years = [2025]
+    # new_years = [2025]
 
     # 2. Process new data
     for i, year in enumerate(new_years):
