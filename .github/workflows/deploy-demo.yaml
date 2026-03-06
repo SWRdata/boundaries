@@ -2,11 +2,11 @@ name: Build and deploy
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - main
-  # pull_request:
-  #   types: [opened, synchronize]
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize]
 
 permissions:
   contents: write
@@ -24,3 +24,5 @@ jobs:
       build_command: 'npm run build'
       build_path: 'build'
       node_version: 25
+    secrets:
+      SWR_NPM_TOKEN: ${{ secrets.SWR_NPM_TOKEN }}
