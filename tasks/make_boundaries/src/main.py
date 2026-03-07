@@ -27,15 +27,15 @@ def run():
     storage_client = storage.Client(project=gcs_project)
 
     # 1. List existing files
-    new_years = fetch_geometry(
-        min_year, storage_client, gcs_bucket, gcs_path, base_url, raw_dir
-    )
+    # new_years = fetch_geometry(
+    #     min_year, storage_client, gcs_bucket, gcs_path, base_url, raw_dir
+    # )
 
-    if len(new_years) == 0:
-        print("No new data found, exiting")
-        return
+    # if len(new_years) == 0:
+    #     print("No new data found, exiting")
+    #     return
 
-    # new_years = [2025]
+    new_years = [2025]
 
     # 2. Process new data
     for i, year in enumerate(new_years):
@@ -58,6 +58,8 @@ def run():
         print("Making versatiles...")
         make_versatiles(geojson_path, versatiles_path, year)
         print(f"Wrote to {versatiles_path}")
+
+        return
 
         print("Uploading to GCS...")
         # upload_blob(storage_client, geojson_path, gcs_bucket, gcs_path)

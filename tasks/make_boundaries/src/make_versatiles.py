@@ -3,6 +3,7 @@ import subprocess
 
 def make_versatiles(input_path: str, output_path: str, year: int):
     mbtiles_path = output_path.replace(".versatiles", ".mbtiles")
+    mbtiles_path_tmp = mbtiles_path.replace("boundaries_", "tmp-boundaries_")
 
     subprocess.run(
         [
@@ -27,15 +28,19 @@ def make_versatiles(input_path: str, output_path: str, year: int):
         ]
     ).check_returncode()
 
+    # Unclear to me why this fixes overzoom but it does
+    subprocess.run(["tile-join", "-f", "-o", mbtiles_path_tmp, mbtiles_path])
+
     subprocess.run(
         [
             "versatiles",
             "convert",
             "--quiet",
             "--compress=brotli",
-            mbtiles_path,
+            mbtiles_path_tmp,
             output_path,
         ]
     ).check_returncode()
 
     subprocess.run(["rm", mbtiles_path]).check_returncode()
+    subprocess.run(["rm", mbtiles_path_tmp]).check_returncode()

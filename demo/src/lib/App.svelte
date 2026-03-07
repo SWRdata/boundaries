@@ -48,17 +48,15 @@
   <Map
     initialBounds={[5.86625, 47.270124, 15.041816, 55.058778]}
     initialLocation={{ zoom: 5.4 }}
-    style={SWRDataLabLight({
-      admin: { show: false },
-    })}
+    style={SWRDataLabLight({ admin: { show: false } })}
     cursor={hovered ? "pointer" : ""}
     projection={{ type: "globe" }}
     showDebug
   >
     {#if tileUrl.includes("tiles.json")}
-      <VectorTileSource id="boundaries" url={tileUrl} maxzoom={15} />
+      <VectorTileSource id="boundaries" url={tileUrl} />
     {:else}
-      <VectorTileSource id="boundaries" tiles={[tileUrl]} maxzoom={15} />
+      <VectorTileSource id="boundaries" tiles={[tileUrl]} maxZoom={8} />
     {/if}
 
     <VectorLayer

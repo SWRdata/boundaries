@@ -18,6 +18,7 @@ map.on("load", () => {
   map.addSource("boundaries", {
     type: "vector",
     tiles: ["https://tiles.datenhub.net/tiles/boundaries/{z}/{x}/{y}"]
+    maxzoom: 8,
     attribution: "© BKG (${date.slice(0, 4)}) dl-de/by-2-0"
   });
   map.addLayer({
