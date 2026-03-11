@@ -3,7 +3,7 @@
   import typescript from "svelte-highlight/languages/typescript";
   import githubStyle from "svelte-highlight/styles/github";
 
-  let { date, dates, filter = $bindable(), levels } = $props();
+  let { date = $bindable(), dates, filter = $bindable(), levels } = $props();
 
   const usages = $derived({
     Javascript: `
@@ -61,7 +61,7 @@ map.on("load", () => {
   <form>
     <div class="input">
       <label for="date-select">Date</label>
-      <select name="date-select" id="" bind:value={date}>
+      <select name="date-select" bind:value={date}>
         {#each dates as d}
           <option value={d}>{d}</option>
         {/each}
@@ -69,7 +69,7 @@ map.on("load", () => {
     </div>
     <div class="input">
       <label for="level-select">Admin level</label>
-      <select name="level-select" id="" bind:value={filter}>
+      <select name="level-select" bind:value={filter}>
         {#each levels as l}
           <option value={l}>{l}</option>
         {/each}

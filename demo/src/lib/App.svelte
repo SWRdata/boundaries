@@ -11,17 +11,21 @@
     tokens,
     AttributionControl,
   } from "@swr-data-lab/components";
-  import Sidebar from "./Sidebar.svelte";
 
-  const tileUrl = false
-    ? `http://localhost:8080/tiles/boundaries/tiles.json`
-    : `https://static.datenhub.net/data/boundaries/boundaries_2025_01-01.versatiles?{z}/{x}/{y}`;
+  import Sidebar from "./Sidebar.svelte";
 
   const levels = [2, 4, 6, 8];
   const dates = ["2024-01-01", "2025-01-01"];
 
   let filter = $state(levels[2]);
   let date = $state(dates[dates.length - 1]);
+
+  let tileUrl = $derived(
+    false
+      ? `http://localhost:8080/tiles/boundaries/tiles.json`
+      : `https://static.datenhub.net/data/boundaries/boundaries_${date}.versatiles?{z}/{x}/{y}`,
+  );
+
   let hoverCoords = $state([]);
   let hovered = $state();
   let tooltipCoordinates = $derived(hovered ? hoverCoords : [0, 0]);
@@ -44,7 +48,7 @@
 </script>
 
 <main class="container">
-  <Sidebar {date} {dates} bind:filter {levels} />
+  <Sidebar {levels} {dates} bind:date bind:filter />
   <Map
     initialBounds={[5.86625, 47.270124, 15.041816, 55.058778]}
     initialLocation={{ zoom: 5.4 }}

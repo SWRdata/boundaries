@@ -1,5 +1,5 @@
 {
-  "name": "p109-besser-wohnen",
+  "name": "boundaries",
   "version": "0.0.1",
   "type": "module",
   "scripts": {
@@ -9,9 +9,9 @@
     "sync": "svelte-kit sync"
   },
   "devDependencies": {
+    "@sveltejs/kit": "^2.22.2",
     "@sveltejs/adapter-auto": "^3.0.8",
     "@sveltejs/adapter-static": "^3.0.8",
-    "@sveltejs/kit": "^2.22.2",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "dotenv": "^16.4.7",
     "prettier": "^3.5.3",
@@ -24,7 +24,7 @@
     "vitest": "^3.0.8"
   },
   "dependencies": {
-    "@swr-data-lab/components": "^3.0.1",
+    "@swr-data-lab/components": "^3.1.1",
     "svelte-highlight": "^7.9.0"
   }
 }
