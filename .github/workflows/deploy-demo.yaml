@@ -9,6 +9,8 @@ on:
       - 'demo/**'
   pull_request:
     types: [opened, synchronize]
+    paths:
+      - 'demo/**'
 
 permissions:
   contents: write
