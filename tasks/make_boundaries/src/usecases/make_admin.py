@@ -2,7 +2,7 @@ import geopandas as gp
 import pandas as pd
 
 
-def make_admin(existing_files: list[str], year: int):
+def make_admin(existing_files: list[str], year: int) -> str:
 
     # This is where we do content-specific processing for each admin layer
     # before merging them all into one file

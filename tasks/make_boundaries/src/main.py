@@ -34,6 +34,7 @@ def run():
 
     available_years = fetch_bkg_years()
     existing_files = fetch_existing(storage_client, gcs_bucket, gcs_path)
+    new_files = []
 
     for y in [y for y in available_years if y >= min_year]:
         tilesets[f"admin_labels_{y}"] = Tileset(
@@ -43,11 +44,14 @@ def run():
             f"Administrative Labels {y}", make_admin
         )
 
-    for k, v in tilesets.items():
+    for k, t in tilesets.items():
         if f"{k}.versatiles" not in existing_files:
-            v.make(existing_files)
+            new_files.append(t.make(existing_files))
 
-    return
+    print(f"Uploading {len(new_files)} new files...")
+
+    for f in new_files:
+        upload_blob(storage_client, f, gcs_bucket, gcs_path)
 
 
 run()
