@@ -8,5 +8,5 @@ class Tileset:
         self.name = name
         self.make_fn = make_fn
 
-    def make(self) -> str:
-        return self.make_fn()
+    def make(self):
+        self.make_fn()

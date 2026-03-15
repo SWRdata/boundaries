@@ -5,12 +5,11 @@ from dotenv import load_dotenv
 from google.cloud import storage
 
 from entities.Tileset import Tileset
-from make_versatiles import make_versatiles
-from process_geometry import process_geometry
 from upload_blob import upload_blob
 from usecases.fetch_bkg_years import fetch_bkg_years
 from usecases.fetch_existing import fetch_existing
 from usecases.make_admin import make_admin
+from usecases.make_admin_labels import make_admin_labels
 
 gcs_project = "swr-data-1"
 gcs_bucket = "datenhub-net-static"
@@ -41,14 +40,18 @@ def run():
             f"Administrative Boundaries {y}", make_admin
         )
         tilesets[f"admin_boundaries_{y}"] = Tileset(
-            f"Administrative Labels {y}", make_admin
+            f"Administrative Labels {y}", make_admin_labels
         )
 
     for k, t in tilesets.items():
-        if f"{k}.versatiles" not in existing_files:
-            new_files.append(t.make(existing_files))
+        fn = f"{k}.versatiles"
+        if fn not in existing_files:
+            new_files.append(fn)
+            t.make()
 
     print(f"Uploading {len(new_files)} new files...")
+
+    return
 
     for f in new_files:
         upload_blob(storage_client, f, gcs_bucket, gcs_path)

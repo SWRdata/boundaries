@@ -1,5 +1,3 @@
-import re
-
 from google.cloud import storage
 
 

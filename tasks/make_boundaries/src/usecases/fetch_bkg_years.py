@@ -13,13 +13,18 @@ def fetch_bkg_years() -> list[int]:
 
     # verify=False because the government issued itself a broken SSL cert
     r = requests.get(base_url, verify=False)
-    if not r.status_code == requests.codes.ok:
+    if not r.ok:
         print(f"Request failed ({r.status_code}), exiting")
         return []
 
     doc = BeautifulSoup(r.text, features="html.parser")
 
+    links = doc.find_all("a", href=re.compile("(\\d+\\/)"))
+
     return [
-        int(t.string.replace("/", ""))
-        for t in doc.find_all("a", href=re.compile("(\\d+\\/)"))
+        year
+        for year in [
+            int(t.string.replace("/", "")) if t.string else None for t in links
+        ]
+        if year is not None
     ]

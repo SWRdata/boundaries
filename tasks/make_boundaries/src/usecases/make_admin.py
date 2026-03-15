@@ -2,10 +2,9 @@ import geopandas as gp
 import pandas as pd
 
 
-def make_admin(existing_files: list[str], year: int) -> str:
+def make_admin(existing_files: list[str], year: int):
 
-    # This is where we do content-specific processing for each admin layer
-    # before merging them all into one file
+    # This is where we do content-specific processing for each admin layer before merging them all into one file
     # See: https://wiki.openstreetmap.org/wiki/File:Administrative_Gliederung_Deutschlands_admin_level.png
 
     name_subs = {
