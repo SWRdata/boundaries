@@ -23,7 +23,7 @@
   let tileUrl = $derived(
     false
       ? `http://localhost:8080/tiles/boundaries/tiles.json`
-      : `https://static.datenhub.net/data/boundaries/boundaries_${date}.versatiles?{z}/{x}/{y}`,
+      : `https://static.datenhub.net/data/boundaries/admin_boundaries_${date}.versatiles?{z}/{x}/{y}`,
   );
 
   let hoverCoords = $state([]);
@@ -31,7 +31,7 @@
   let tooltipCoordinates = $derived(hovered ? hoverCoords : [0, 0]);
 
   let fills = [];
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 16; i++) {
     const key = Object.keys(tokens.shades)[
       i % Object.keys(tokens.shades).length
     ];
@@ -140,7 +140,8 @@
         <table class="tooltip-body">
           <tbody>
             {#each Object.entries(hovered.properties) as [k, v]}
-              <tr><th>{k}</th><td>{v}</td></tr>{/each}
+              <tr><th>{k}</th><td>{v}</td></tr>
+            {/each}
           </tbody>
         </table>
       </Tooltip>

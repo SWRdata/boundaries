@@ -56,13 +56,15 @@ def run():
             },
         )
 
-        # tilesets[f"admin_labels_{date}"] = Tileset(
-        #     f"Administrative Labels {date}",
-        #     raw_dir,
-        #     processed_dir,
-        #     date,
-        #     make_admin_labels,
-        # )
+        tilesets[f"admin_labels_{date}"] = Tileset(
+            name=f"Administrative Labels {date}",
+            make_fn=make_admin_labels,
+            make_args={
+                "cache_dir": raw_dir,
+                "output_dir": processed_dir,
+                "date": date,
+            },
+        )
 
     pending_files = [
         k for k in tilesets.keys() if f"{k}.versatiles" not in existing_files

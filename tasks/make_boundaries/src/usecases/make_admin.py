@@ -28,8 +28,6 @@ def make_admin(cache_dir: str, output_dir: str, date: date):
     json_path = f"{cache_dir}/admin_boundaries_{ds}.geojson"
     versatiles_path = f"{output_dir}/admin_boundaries_{ds}.versatiles"
 
-    output_cols = ["id", "ars", "land", "name", "admin_level", "geometry"]
-
     fp = "vg250_01-01.utm32s.shape.ebenen/vg250_ebenen_0101"
 
     if os.path.exists(cache_path):
@@ -95,7 +93,11 @@ def make_admin(cache_dir: str, output_dir: str, date: date):
     res["id"] = res["OBJID"]
 
     res["name"] = res["name"].apply(lambda x: name_subs[x] if x in name_subs else x)
-    res[output_cols].to_crs("wgs84").to_file(json_path)
+
+    res[["id", "ars", "land", "name", "admin_level", "geometry"]].to_crs(
+        "wgs84"
+    ).to_file(json_path)
+
     print(f"Wrote to {json_path}")
 
     try:
