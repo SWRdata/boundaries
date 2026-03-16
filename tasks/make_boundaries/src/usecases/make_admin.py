@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 
 from globals import BKG_URL
-from make_versatiles import make_versatiles
+from usecases.make_versatiles import make_versatiles
 
 name_subs = {
     "Freiburg im Breisgau": "Freiburg",
