@@ -1,2 +1,2 @@
-def make_admin_labels() -> str:
-    return ""
+def make_admin_labels():
+    return None

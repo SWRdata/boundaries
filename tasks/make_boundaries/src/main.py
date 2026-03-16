@@ -46,8 +46,8 @@ def run():
     for k, t in tilesets.items():
         fn = f"{k}.versatiles"
         if fn not in existing_files:
-            new_files.append(fn)
-            t.make()
+            if t.make():
+                new_files.append(fn)
 
     print(f"Uploading {len(new_files)} new files...")
 
