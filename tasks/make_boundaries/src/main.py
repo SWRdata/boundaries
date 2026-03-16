@@ -1,3 +1,4 @@
+import datetime
 import os
 from typing import Dict
 
@@ -16,8 +17,8 @@ gcs_bucket = "datenhub-net-static"
 gcs_path = "data/boundaries/"
 min_year = 2024
 
-raw_dir = "./tmp/raw/"
-processed_dir = "./tmp/processed/"
+raw_dir = "./tmp/raw"
+processed_dir = "./tmp/processed"
 
 
 tilesets: Dict[str, Tileset] = {}
@@ -31,30 +32,64 @@ def run():
 
     storage_client = storage.Client(project=gcs_project)
 
+    print("Fetching BKG files... ", end="")
     available_years = fetch_bkg_years()
+    print(f"found {len(available_years)}\n")
+
+    print("Fetching existing files... ", end="")
     existing_files = fetch_existing(storage_client, gcs_bucket, gcs_path)
-    new_files = []
+    print(f"found {len(existing_files)}:\n- {'\n- '.join(existing_files)}")
+
+    new_files: list[str] = []
+    failed_files: list[str] = []
 
     for y in [y for y in available_years if y >= min_year]:
-        tilesets[f"admin_labels_{y}"] = Tileset(
-            f"Administrative Boundaries {y}", make_admin
+        date = datetime.date(y, 1, 1)
+
+        tilesets[f"admin_boundaries_{date.strftime('%Y-%m-%d')}"] = Tileset(
+            name=f"Administrative Boundaries {y}",
+            make_fn=make_admin,
+            make_args={
+                "cache_dir": raw_dir,
+                "output_dir": processed_dir,
+                "date": date,
+            },
         )
-        tilesets[f"admin_boundaries_{y}"] = Tileset(
-            f"Administrative Labels {y}", make_admin_labels
-        )
 
-    for k, t in tilesets.items():
-        fn = f"{k}.versatiles"
-        if fn not in existing_files:
-            if t.make():
-                new_files.append(fn)
+        # tilesets[f"admin_labels_{date}"] = Tileset(
+        #     f"Administrative Labels {date}",
+        #     raw_dir,
+        #     processed_dir,
+        #     date,
+        #     make_admin_labels,
+        # )
 
-    print(f"Uploading {len(new_files)} new files...")
+    pending_files = [
+        k for k in tilesets.keys() if f"{k}.versatiles" not in existing_files
+    ]
 
-    return
+    if len(pending_files) == 0:
+        print("\nNo files to be built, bye!")
+        return
+
+    print(
+        f"\n{len(pending_files)} files pending:\n- {'\n- '.join([f'{f}.versatiles' for f in pending_files])}\n"
+    )
+
+    for k in pending_files:
+        print(f"Making {k}...")
+        f = tilesets[k].make()
+        if f:
+            new_files.append(f)
+        else:
+            failed_files.append(k)
 
     for f in new_files:
-        upload_blob(storage_client, f, gcs_bucket, gcs_path)
+        upload_blob(
+            storage_client, f, gcs_bucket, os.path.join(gcs_path, os.path.basename(f))
+        )
+
+    print(f"Uploaded {len(new_files)} new files, {len(failed_files)} failed")
 
 
 run()

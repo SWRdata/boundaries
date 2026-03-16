@@ -3,16 +3,15 @@ import re
 import requests
 from bs4 import BeautifulSoup
 
+from globals import BKG_URL
+
 # Fetches a list of available years from the BKG website
 
 
 def fetch_bkg_years() -> list[int]:
-    base_url = "https://daten.gdz.bkg.bund.de/produkte/vg/vg250_ebenen_0101/"
 
-    print("Fetching BKG index... ")
-
-    # verify=False because the government issued itself a broken SSL cert
-    r = requests.get(base_url, verify=False)
+    # verify=False if the government issued itself a broken SSL cert again
+    r = requests.get(BKG_URL, verify=True)
     if not r.ok:
         print(f"Request failed ({r.status_code}), exiting")
         return []

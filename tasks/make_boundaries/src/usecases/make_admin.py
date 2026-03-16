@@ -1,33 +1,59 @@
+import os
+from datetime import date
+
 import geopandas as gp
 import pandas as pd
+import requests
+
+from globals import BKG_URL
+from make_versatiles import make_versatiles
+
+name_subs = {
+    "Freiburg im Breisgau": "Freiburg",
+    "Dillingen a.d.Donau": "Dillingen an der Donau",
+    "Mühldorf a.Inn": "Mühldorf am Inn",
+}
 
 
-def make_admin(input_path: str, year: int):
+# This is where we do content-specific processing for each admin layer
+# before merging them all into one JSON file which we convert to versatiles
+# See: https://wiki.openstreetmap.org/wiki/File:Administrative_Gliederung_Deutschlands_admin_level.png
+def make_admin(cache_dir: str, output_dir: str, date: date):
 
-    # This is where we do content-specific processing for each admin layer before merging them all into one file
-    # See: https://wiki.openstreetmap.org/wiki/File:Administrative_Gliederung_Deutschlands_admin_level.png
+    # 1. Fetch the BKG data we need
+    ds = date.strftime("%Y-%m-%d")
 
-    name_subs = {
-        "Freiburg im Breisgau": "Freiburg",
-        "Dillingen a.d.Donau": "Dillingen an der Donau",
-        "Mühldorf a.Inn": "Mühldorf am Inn",
-    }
+    file_name = "vg250_01-01.utm32s.shape.ebenen.zip"
+    cache_path = f"{cache_dir}/{ds}_{file_name}"
+    json_path = f"{cache_dir}/admin_boundaries_{ds}.geojson"
+    versatiles_path = f"{output_dir}/admin_boundaries_{ds}.versatiles"
 
-    fp = "vg250_01-01.utm32s.shape.ebenen/vg250_ebenen_0101"
     output_cols = ["id", "ars", "land", "name", "admin_level", "geometry"]
 
-    # Admin 2
+    fp = "vg250_01-01.utm32s.shape.ebenen/vg250_ebenen_0101"
+
+    if os.path.exists(cache_path):
+        print(f"Found cached data at {cache_path}")
+    else:
+        print("Cache miss, fetching BKG data... ")
+        r = requests.get(f"{BKG_URL}/{date.year}/{file_name}")
+        with open(cache_path, "wb") as f:
+            f.write(r.content)
+        print(f"wrote to {cache_path}")
+
+    # 2. Extract + wrangle shapes
+    # 2.1 Admin 2
     print("Staat... ", end="")
-    country = gp.read_file(f"zip://{input_path}!{fp}/VG250_STA.shp")
+    country = gp.read_file(f"zip://{cache_path}!{fp}/VG250_STA.shp")
     country["admin_level"] = 2
     country["kind"] = "Staat"
     country_processed = country.loc[country["OBJID"] == "DEBKGVG200000CKM"]
     assert country_processed.shape[0] == 1
     print(f"done ({country_processed.shape[0]} geom)")
 
-    # Admin 4
+    # 2.2  Admin 4
     print("Land... ", end="")
-    laender = gp.read_file(f"zip://{input_path}!{fp}/VG250_LAN.shp")
+    laender = gp.read_file(f"zip://{cache_path}!{fp}/VG250_LAN.shp")
     laender["admin_level"] = 4
     country["kind"] = "Land"
     laender["land"] = laender["SN_L"]
@@ -35,18 +61,18 @@ def make_admin(input_path: str, year: int):
     assert laender_processed.shape[0] == 16
     print(f"done ({laender_processed.shape[0]} geoms)")
 
-    # Admin 6
+    # 2.3 Admin 6
     print("Kreis... ", end="")
-    kreise = gp.read_file(f"zip://{input_path}!{fp}/VG250_KRS.shp")
+    kreise = gp.read_file(f"zip://{cache_path}!{fp}/VG250_KRS.shp")
     kreise["admin_level"] = 6
     country["kind"] = "Kreis"
     kreise["land"] = kreise["SN_L"]
     kreise_processed = kreise.loc[kreise["GF"] == 4]
     print(f"done ({kreise_processed.shape[0]} geoms)")
 
-    # Admin 8
+    # 2.4 Admin 8
     print("Gemeinde... ", end="")
-    gemeinden = gp.read_file(f"zip://{input_path}!{fp}/VG250_GEM.shp")
+    gemeinden = gp.read_file(f"zip://{cache_path}!{fp}/VG250_GEM.shp")
     gemeinden["admin_level"] = 8
     country["kind"] = "Gemeinde"
     gemeinden["land"] = gemeinden["SN_L"]
@@ -69,5 +95,13 @@ def make_admin(input_path: str, year: int):
     res["id"] = res["OBJID"]
 
     res["name"] = res["name"].apply(lambda x: name_subs[x] if x in name_subs else x)
+    res[output_cols].to_crs("wgs84").to_file(json_path)
+    print(f"Wrote to {json_path}")
 
-    return res[output_cols].to_crs("wgs84")
+    try:
+        make_versatiles(json_path, versatiles_path, date)
+    except Exception:
+        print(f"Failed to build {versatiles_path}")
+        return
+
+    return versatiles_path
