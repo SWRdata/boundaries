@@ -3,7 +3,13 @@
   import typescript from "svelte-highlight/languages/typescript";
   import githubStyle from "svelte-highlight/styles/github";
 
-  let { date = $bindable(), dates, filter = $bindable(), levels } = $props();
+  let {
+    date = $bindable(),
+    dates,
+    filter = $bindable(),
+    showLabels = $bindable(),
+    levels,
+  } = $props();
 
   const usages = $derived({
     Javascript: `
@@ -75,6 +81,16 @@ map.on("load", () => {
         {/each}
       </select>
     </div>
+    <div class="input">
+      <label for="labels-switch">Labels</label>
+      <input
+        name="labels-switch"
+        id="labels-switch"
+        type="checkbox"
+        switch
+        bind:checked={showLabels}
+      />
+    </div>
   </form>
 
   <h2>Usage</h2>
@@ -137,6 +153,8 @@ map.on("load", () => {
     padding: 0.2rem 0.45rem;
     border: 1px solid var(--gray-light-1);
     border-radius: 2px;
+    width: 100%;
+    font-size: var(--fs-small-2);
   }
 
   label {
@@ -144,8 +162,9 @@ map.on("load", () => {
     font-size: var(--fs-small-3);
     margin-bottom: 0.1em;
   }
-  select {
-    font-size: var(--fs-small-2);
+
+  input[type="checkbox"] {
+    display: block;
   }
   .input {
     display: flex;
@@ -153,7 +172,9 @@ map.on("load", () => {
     flex-grow: 1;
     flex-flow: column;
     gap: 0.2em;
+    align-items: flex-start;
   }
+
   .usages {
     display: flex;
     flex-flow: column;

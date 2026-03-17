@@ -17,13 +17,23 @@
   const levels = [2, 4, 6, 8];
   const dates = ["2024-01-01", "2025-01-01"];
 
-  let filter = $state(levels[2]);
+  let filter = $state(levels[1]);
   let date = $state(dates[dates.length - 1]);
+  let showLabels = $state(true);
 
-  let tileUrl = $derived(
+  let tileUrls = $derived(
     false
-      ? `http://localhost:8080/tiles/boundaries/tiles.json`
-      : `https://static.datenhub.net/data/boundaries/admin_boundaries_${date}.versatiles?{z}/{x}/{y}`,
+      ? [`http://localhost:8080/tiles/boundaries/tiles.json`]
+      : [
+          [
+            "boundaries",
+            `https://static.datenhub.net/data/boundaries/admin_boundaries_${date}.versatiles?{z}/{x}/{y}`,
+          ],
+          [
+            "labels",
+            `https://static.datenhub.net/data/boundaries/admin_labels_${date}.versatiles?{z}/{x}/{y}`,
+          ],
+        ],
   );
 
   let hoverCoords = $state([]);
@@ -48,20 +58,24 @@
 </script>
 
 <main class="container">
-  <Sidebar {levels} {dates} bind:date bind:filter />
+  <Sidebar {levels} {dates} bind:date bind:filter bind:showLabels />
   <Map
     initialBounds={[5.86625, 47.270124, 15.041816, 55.058778]}
     initialLocation={{ zoom: 5.4 }}
-    style={SWRDataLabLight({ admin: { show: false } })}
+    style={SWRDataLabLight({
+      admin: { show: false },
+    })}
     cursor={hovered ? "pointer" : ""}
     projection={{ type: "globe" }}
     showDebug
   >
-    {#if tileUrl.includes("tiles.json")}
-      <VectorTileSource id="boundaries" url={tileUrl} />
-    {:else}
-      <VectorTileSource id="boundaries" tiles={[tileUrl]} maxZoom={8} />
-    {/if}
+    {#each tileUrls as [id, url]}
+      {#if url.includes("tiles.json")}
+        <VectorTileSource {id} {url} />
+      {:else}
+        <VectorTileSource {id} tiles={[url]} maxZoom={8} />
+      {/if}
+    {/each}
 
     <VectorLayer
       id="fill"
@@ -107,10 +121,11 @@
       filter={["==", "admin_level", 2]}
       paint={{
         "line-width": 1.5,
-        "line-color": tokens.shades.gray.dark2,
+        "line-color": tokens.shades.gray.dark1,
         "line-opacity": 1,
       }}
     />
+
     <VectorLayer
       bind:hovered
       id="outline-hover"
@@ -127,6 +142,40 @@
         ],
         "line-color": "black",
         "line-opacity": 1,
+      }}
+    />
+
+    {#if showLabels}
+      <VectorLayer
+        id="labels-state"
+        sourceId="labels"
+        sourceLayer="administrative"
+        type="symbol"
+        filter={["==", "admin_level", filter]}
+        layout={{
+          "text-size": 14,
+          "text-overlap": "always",
+          "text-font": ["swr_sans_medium"],
+          "text-field": "{name}",
+        }}
+        paint={{
+          "text-halo-color": "rgba(255,255,255,1)",
+          "text-halo-width": 1,
+          "text-halo-blur": 3,
+          "text-color": tokens.shades.gray.dark5,
+        }}
+      />
+    {/if}
+    <VectorLayer
+      id="labels-points"
+      sourceId="labels"
+      sourceLayer="administrative"
+      type="circle"
+      filter={["==", "admin_level", filter]}
+      layout={{}}
+      paint={{
+        visibility: "none",
+        "circle-color": tokens.shades.gray.dark5,
       }}
     />
 
