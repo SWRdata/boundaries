@@ -61,7 +61,7 @@ def run():
             },
         )
 
-        tilesets[f"admin_labels_{date}"] = Tileset(
+        tilesets[f"admin_labels_{date.strftime('%Y-%m-%d')}"] = Tileset(
             name=f"Administrative Labels {date}",
             make_fn=make_admin_labels,
             make_args={

@@ -82,7 +82,7 @@ def make_admin_labels(cache_dir: str, output_dir: str, date: datetime.date):
 
     # 4. Convert to versatiles
     try:
-        make_versatiles(json_path, versatiles_path, date)
+        make_versatiles(json_path, versatiles_path, date, ["--base-zoom=5"])
     except Exception:
         print(f"Failed to build {versatiles_path}")
         return

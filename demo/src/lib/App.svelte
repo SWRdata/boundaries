@@ -22,8 +22,14 @@
   let showLabels = $state(true);
 
   let tileUrls = $derived(
-    false
-      ? [`http://localhost:8080/tiles/boundaries/tiles.json`]
+    dev
+      ? [
+          [
+            "boundaries",
+            `http://localhost:8080/tiles/admin_boundaries/tiles.json`,
+          ],
+          ["labels", `http://localhost:8080/tiles/admin_labels/tiles.json`],
+        ]
       : [
           [
             "boundaries",
@@ -154,15 +160,16 @@
         filter={["==", "admin_level", filter]}
         layout={{
           "text-size": 14,
+          "text-max-width": 5,
           "text-overlap": "always",
           "text-font": ["swr_sans_medium"],
           "text-field": "{name}",
         }}
         paint={{
-          "text-halo-color": "rgba(255,255,255,1)",
+          "text-halo-color": "rgba(255,255,255,.85)",
           "text-halo-width": 1,
           "text-halo-blur": 3,
-          "text-color": tokens.shades.gray.dark5,
+          "text-color": "black",
         }}
       />
     {/if}

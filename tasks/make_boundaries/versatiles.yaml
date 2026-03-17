@@ -3,8 +3,10 @@ server:
    port: 8080
 
 tiles:
-   - name: boundaries
-     src: tmp/processed/boundaries_2025_01-01.versatiles
+   - name: admin_boundaries
+     src: tmp/processed/admin_boundaries_2025-01-01.versatiles
+   - name: admin_labels
+     src: tmp/processed/admin_labels_2025-01-01.versatiles
 
 cors:
    allowed_origins:

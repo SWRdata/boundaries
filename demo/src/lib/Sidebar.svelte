@@ -145,7 +145,7 @@ map.on("load", () => {
 
   form {
     display: flex;
-    gap: 0.5em;
+    gap: 0.75em;
     margin-bottom: 1em;
   }
   select {
@@ -168,8 +168,6 @@ map.on("load", () => {
   }
   .input {
     display: flex;
-    flex-basis: 0;
-    flex-grow: 1;
     flex-flow: column;
     gap: 0.2em;
     align-items: flex-start;

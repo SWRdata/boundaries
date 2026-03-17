@@ -2,7 +2,9 @@ import datetime as dt
 import subprocess
 
 
-def make_versatiles(input_path: str, output_path: str, date: dt.date):
+def make_versatiles(
+    input_path: str, output_path: str, date: dt.date, tc_args: list[str] = []
+):
     mbtiles_path = output_path.replace(".versatiles", ".mbtiles")
     mbtiles_path_tmp = mbtiles_path.replace(".mbtiles", "_tmp.mbtiles")
 
@@ -10,8 +12,6 @@ def make_versatiles(input_path: str, output_path: str, date: dt.date):
     subprocess.run(
         [
             "tippecanoe",
-            "--quiet",
-            "--no-progress-indicator",
             "--name",
             "SWR Data Lab Boundaries",
             f"--description=Administrative boundaries for Germany as of {date.strftime('%Y/%m/%d')}",
@@ -24,7 +24,10 @@ def make_versatiles(input_path: str, output_path: str, date: dt.date):
             "--generate-ids",
             "--extend-zooms-if-still-dropping",
             "--coalesce-densest-as-needed",
+            "--no-progress-indicator",
+            "--quiet",
             "--force",
+            *tc_args,
             "-o",
             mbtiles_path,
             input_path,
