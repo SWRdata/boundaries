@@ -4,7 +4,7 @@ import subprocess
 
 def make_versatiles(input_path: str, output_path: str, date: dt.date):
     mbtiles_path = output_path.replace(".versatiles", ".mbtiles")
-    mbtiles_path_tmp = mbtiles_path.replace("boundaries_", "tmp-boundaries_")
+    mbtiles_path_tmp = mbtiles_path.replace(".mbtiles", "_tmp.mbtiles")
 
     print("Building tiles... ", end="")
     subprocess.run(
