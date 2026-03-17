@@ -42,7 +42,6 @@ def make_admin_labels(cache_dir: str, output_dir: str, date: datetime.date):
     country = gp.read_file(f"zip://{cache_path}!{fp}/VG250_STA.shp")
     country_labels = country.loc[country["OBJID"] == "DEBKGVG200000CKM"]
     assert country_labels.shape[0] == 1
-
     country_labels["admin_level"] = 2
     country_labels["kind"] = "Staat"
     country_labels["geometry"] = country_labels.geometry.apply(lambda x: x.centroid)
@@ -53,22 +52,35 @@ def make_admin_labels(cache_dir: str, output_dir: str, date: datetime.date):
     laender = gp.read_file(f"zip://{cache_path}!{fp}/VG250_LAN.shp")
     laender_labels = laender.loc[laender["GF"] == 4]
     assert laender_labels.shape[0] == 16
-
     laender_labels["admin_level"] = 4
     laender_labels["kind"] = "Land"
     laender_labels["land"] = laender["SN_L"]
-
     laender_labels["geometry"] = laender_labels.geometry.apply(get_label_point)
     print(f"done ({laender_labels.shape[0]} geoms)")
 
+    # 2.3 Admin 6
+    print("Kreis... ", end="")
+    kreise = gp.read_file(f"zip://{cache_path}!{fp}/VG250_KRS.shp")
+    kreise_labels = kreise.loc[kreise["GF"] == 4]
+    kreise_labels["admin_level"] = 6
+    kreise_labels["kind"] = "Kreis"
+    kreise_labels["land"] = kreise_labels["SN_L"]
+    kreise_labels["geometry"] = kreise_labels.geometry.apply(get_label_point)
+    print(f"done ({kreise_labels.shape[0]} geoms)")
+
+    # 2.4 Admin 8
+    print("Gemeinde... ", end="")
+    gemeinden = gp.read_file(f"zip://{cache_path}!{fp}/VG250_GEM.shp")
+    gemeinden_labels = gemeinden.loc[gemeinden["GF"] == 4]
+    gemeinden_labels["admin_level"] = 8
+    gemeinden_labels["kind"] = "Gemeinde"
+    gemeinden_labels["land"] = gemeinden["SN_L"]
+    gemeinden_labels["geometry"] = gemeinden_labels.geometry.apply(get_label_point)
+    print(f"done ({gemeinden_labels.shape[0]} geoms)")
+
     # 3. Concat
     res = gp.GeoDataFrame(
-        pd.concat(
-            [
-                country_labels,
-                laender_labels,
-            ]
-        )
+        pd.concat([country_labels, laender_labels, kreise_labels, gemeinden_labels])
     )
 
     res["name"] = res["GEN"]
@@ -76,7 +88,6 @@ def make_admin_labels(cache_dir: str, output_dir: str, date: datetime.date):
     res["id"] = res["OBJID"]
 
     # 4. Apply manual substitutions
-
     res["name"] = res["name"].apply(lambda x: NAME_SUBS[x] if x in NAME_SUBS else x)
 
     label_subs = gp.read_file("./label_substitutions.geojson")

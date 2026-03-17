@@ -163,7 +163,6 @@
         layout={{
           "text-size": 15,
           "text-max-width": 5,
-          "text-overlap": "always",
           "text-font": ["swr_sans_medium"],
           "text-field": "{name}",
         }}
