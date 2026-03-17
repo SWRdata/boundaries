@@ -1,5 +1,5 @@
-from typing import Dict
 import datetime
+from typing import Dict
 
 import geopandas as gp
 import pandas as pd
@@ -61,7 +61,7 @@ def make_admin_labels(cache_dir: str, output_dir: str, date: datetime.date):
     laender_labels["geometry"] = laender_labels.geometry.apply(get_label_point)
     print(f"done ({laender_labels.shape[0]} geoms)")
 
-    # 3. Concat + write to JSON
+    # 3. Concat
     res = gp.GeoDataFrame(
         pd.concat(
             [
@@ -75,11 +75,32 @@ def make_admin_labels(cache_dir: str, output_dir: str, date: datetime.date):
     res["ars"] = res["ARS"]
     res["id"] = res["OBJID"]
 
+    # 4. Apply manual substitutions
+
     res["name"] = res["name"].apply(lambda x: NAME_SUBS[x] if x in NAME_SUBS else x)
+
+    label_subs = gp.read_file("./label_substitutions.geojson")
+    print(f"Applying {label_subs.shape[0]} manual subsititutions... ", end="")
+
+    label_position_subs = (
+        label_subs.to_crs(res.crs or "EPSG:25832")
+        .set_index("ars")
+        .to_dict(orient="index")
+    )
+
+    res["geometry"] = res.apply(
+        lambda x: (
+            label_position_subs[x["ars"]]["geometry"]
+            if x["ars"] in label_position_subs
+            else x["geometry"]
+        ),
+        axis=1,
+    )
+    print("done")
 
     res[["id", "ars", "land", "name", "admin_level", "geometry"]].to_crs(
         "wgs84"
-    ).to_file(json_path)
+    ).reset_index().to_file(json_path)
 
     print(f"Wrote to {json_path}")
 
