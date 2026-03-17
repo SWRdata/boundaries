@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "label_substitutions",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "ars": "08" }, "geometry": { "type": "Point", "coordinates": [ 9.040499754799534, 48.586592461765228 ] } },
+{ "type": "Feature", "properties": { "ars": "09" }, "geometry": { "type": "Point", "coordinates": [ 11.579650448049534, 48.989327839613289 ] } },
+{ "type": "Feature", "properties": { "ars": "02" }, "geometry": { "type": "Point", "coordinates": [ 10.001824297099942, 53.552384253213262 ] } }
+]
+}

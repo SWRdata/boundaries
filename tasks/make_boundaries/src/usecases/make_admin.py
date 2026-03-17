@@ -79,9 +79,11 @@ def make_admin(cache_dir: str, output_dir: str, date: date):
 
     res["name"] = res["name"].apply(lambda x: NAME_SUBS[x] if x in NAME_SUBS else x)
 
-    res[["id", "ars", "land", "name", "admin_level", "geometry"]].to_crs(
-        "wgs84"
-    ).to_file(json_path)
+    output_cols = ["id", "ars", "land", "name", "admin_level", "geometry"]
+    res[output_cols].to_crs("wgs84").to_file(json_path)
+    laender_processed.to_crs("wgs84").simplify(0.01).to_file(
+        f"{cache_dir}/admin_boundaries_laender_{ds}.geojson"
+    )
 
     print(f"Wrote to {json_path}")
 

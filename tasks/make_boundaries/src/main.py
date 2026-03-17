@@ -33,13 +33,13 @@ def run():
     storage_client = storage.Client(project=gcs_project)
 
     print("Fetching BKG files... ", end="")
-    available_years = fetch_bkg_years()
-    # available_years = [2025]
+    # available_years = fetch_bkg_years()
+    available_years = [2025]
     print(f"found {len(available_years)}\n")
 
     print("Fetching existing files... ", end="")
-    existing_files = fetch_existing(storage_client, gcs_bucket, gcs_path)
-    # existing_files = []
+    # existing_files = fetch_existing(storage_client, gcs_bucket, gcs_path)
+    existing_files = []
     if len(existing_files) > 0:
         print(f"found {len(existing_files)}:\n- {'\n- '.join(existing_files)}")
     else:
@@ -91,6 +91,7 @@ def run():
         else:
             failed_files.append(k)
 
+    return
     for f in new_files:
         upload_blob(
             storage_client, f, gcs_bucket, os.path.join(gcs_path, os.path.basename(f))

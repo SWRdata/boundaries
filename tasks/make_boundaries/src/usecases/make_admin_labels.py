@@ -1,3 +1,4 @@
+from typing import Dict
 import datetime
 
 import geopandas as gp
@@ -9,6 +10,8 @@ import shapely.ops as ops
 from globals import BKG_URL, NAME_SUBS
 from usecases.fetch_unless_cached import fetch_unless_cached
 from usecases.make_versatiles import make_versatiles
+
+label_subs: Dict[str, geometry.Point] = {}
 
 
 def get_label_point(x: geometry.Polygon):
