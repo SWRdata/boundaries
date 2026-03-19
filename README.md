@@ -10,16 +10,17 @@ Ready-to-use, timestamped boundary data for Germany in the versatiles format.
 https://static.datenhub.net/data/boundaries/[TILESET]_[TIMESTAMP].versatiles?{z}/{x}/{y}
 ```
 
-See [demo](https://static.datenhub.net/apps/boundaries/main/index.html) for code samples. Note: These tilesets require [manual attribution](https://maplibre.org/maplibre-gl-js/docs/API/interfaces/Source/#attribution).
+See [demo](https://static.datenhub.net/apps/boundaries/main/index.html) for code samples. Note these tilesets require [manual attribution](https://maplibre.org/maplibre-gl-js/docs/API/interfaces/Source/#attribution).
 
-## Tilesets
+### Tilesets
 
 | Name               | Description                                         | Source                                                                                                                                                | License                                                                                           |
 | ------------------ | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | `admin_boundaries` | Staat, Länder, Kreise, Gemeinden 1:250,000          | [BKG VG250](https://gdz.bkg.bund.de/index.php/default/digitale-geodaten/verwaltungsgebiete/verwaltungsgebiete-1-250-000-stand-01-01-vg250-01-01.html) | [DNN 2.0](https://sgx.geodatenzentrum.de/web_public/gdz/lizenz/deu/nutzungsbedingungen_vg250.pdf) |
-| `admin_labels`     | Label points for all features in `admin_boundaries` | Derived from `admin_boundaries`                                                                                                                       | [DNN 2.0](https://sgx.geodatenzentrum.de/web_public/gdz/lizenz/deu/nutzungsbedingungen_vg250.pdf) |
+| `admin_labels`     | Label points for all features in `admin_boundaries` | [BKG VG250](https://gdz.bkg.bund.de/index.php/default/digitale-geodaten/verwaltungsgebiete/verwaltungsgebiete-1-250-000-stand-01-01-vg250-01-01.html)                                                                                                                       | [DNN 2.0](https://sgx.geodatenzentrum.de/web_public/gdz/lizenz/deu/nutzungsbedingungen_vg250.pdf) |
+### Timestamps
 
-Available timestamps: `2025-01-01`, `2024-01-01`
+`2025-01-01`, `2024-01-01`
 
 ### Fields
 
@@ -47,4 +48,4 @@ Available timestamps: `2025-01-01`, `2024-01-01`
 
 ## Prior work
 
-- [polylabel](https://github.com/mapbox/polylabel)
+- [Polylabel](https://github.com/mapbox/polylabel)
