@@ -85,7 +85,7 @@
 						.flat(),
 					tokens.shades.blue.light4,
 				],
-				'fill-opacity': 0.25,
+				'fill-opacity': 0.125,
 			}}
 		/>
 		<VectorLayer
@@ -144,8 +144,8 @@
 				}}
 				paint={{
 					'text-halo-color': 'rgba(255,255,255,.95)',
-					'text-halo-width': 1,
-					'text-halo-blur': 3,
+					'text-halo-width': 1.5,
+					'text-halo-blur': 2,
 					'text-color': 'black',
 				}}
 			/>
