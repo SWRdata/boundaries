@@ -6,7 +6,9 @@ Ready-to-use, timestamped boundary data for Germany in the versatiles format.
 
 ## Usage
 
-`https://static.datenhub.net/data/boundaries/[TILESET]_[TIMESTAMP].versatiles?{z}/{x}/{y}`
+```
+https://static.datenhub.net/data/boundaries/[TILESET]_[TIMESTAMP].versatiles?{z}/{x}/{y}
+```
 
 See [demo](https://static.datenhub.net/apps/boundaries/main/index.html) for more detailed code samples. Note: These tilesets require [manual attribution](https://maplibre.org/maplibre-gl-js/docs/API/interfaces/Source/#attribution).
 
@@ -33,8 +35,9 @@ Available timestamps: `2025-01-01`, `2024-01-01`
 
 ### Tile generation
 
-- Be on Mac or Linux because `tippecanoe` is only available on those platforms
-- `cd tasks/make_boundaries && uv sync` to install Python dependencies
+- Install [`uv`](https://github.com/astral-sh/uv), [`versatiles`](https://github.com/versatiles-org/versatiles-rs) and [`tippecanoe`](https://github.com/felt/tippecanoe) (Mac/Linux only)
+- `cd tasks/make_boundaries`
+- `uv sync` to install Python dependencies
 - `uv run src/main.py` to run the tile generation pipeline
 - `versatiles serve -c versatiles.yaml` to start a local tile server
 
@@ -44,6 +47,4 @@ Available timestamps: `2025-01-01`, `2024-01-01`
 
 ## Prior work
 
-- [verastiles-rs](https://github.com/versatiles-org/versatiles-rs)
-- [tippecanoe](https://github.com/felt/tippecanoe)
 - [polylabel](https://github.com/mapbox/polylabel)
