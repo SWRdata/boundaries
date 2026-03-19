@@ -184,11 +184,6 @@ map.on("load", () => {
 		margin-bottom: 1.5em;
 	}
 
-	h2 {
-		font-weight: 600;
-		font-size: var(--fs-small-1);
-	}
-
 	form {
 		display: flex;
 		gap: 0.75em;
