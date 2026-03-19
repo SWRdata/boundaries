@@ -10,7 +10,7 @@ Ready-to-use, timestamped boundary data for Germany in the versatiles format.
 https://static.datenhub.net/data/boundaries/[TILESET]_[TIMESTAMP].versatiles?{z}/{x}/{y}
 ```
 
-See [demo](https://static.datenhub.net/apps/boundaries/main/index.html) for more detailed code samples. Note: These tilesets require [manual attribution](https://maplibre.org/maplibre-gl-js/docs/API/interfaces/Source/#attribution).
+See [demo](https://static.datenhub.net/apps/boundaries/main/index.html) for code samples. Note: These tilesets require [manual attribution](https://maplibre.org/maplibre-gl-js/docs/API/interfaces/Source/#attribution).
 
 ## Tilesets
 
