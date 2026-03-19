@@ -142,6 +142,7 @@ map.on("load", () => {
 	</ul>
 	<p class="footer">
 		<a href="https://github.com/SWRdata/boundaries">Docs</a>
+		<a href="https://github.com/SWRdata/boundaries/issues">Issues</a>
 		<span>© {new Date().getFullYear()}</span>
 	</p>
 </div>
@@ -155,7 +156,7 @@ map.on("load", () => {
 		max-width: 20em;
 		z-index: 100;
 		background: var(--color-pageFill);
-		padding: 0.75rem;
+		padding: 0.85rem;
 		border-radius: 3px;
 		padding-right: 1.25rem;
 		box-shadow: 0px 1px 3px rgba(black, 0.1);
@@ -168,8 +169,10 @@ map.on("load", () => {
 	}
 
 	.eyebrow {
-		font-size: var(--fs-small-3);
+		font-size: calc(var(--fs-small-3) * 0.9);
+		text-transform: uppercase;
 		display: block;
+		letter-spacing: 0.05em;
 	}
 
 	h1 {

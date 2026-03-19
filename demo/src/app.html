@@ -1,38 +1,41 @@
 <!doctype html>
 <html lang="en-EN">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    %sveltekit.head%
-  </head>
 
-  <body>
-    <style>
-      @font-face {
-        font-family: "SWR-VAR-Sans";
-        font-weight: 100 900;
-        font-stretch: normal;
-        font-display: swap;
-        src: url("https://www.swr.de/assets/fonts/swr_type/SWR_VAR_WEB/SWR-VAR-Sans.woff2")
-          format("woff2");
-      }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  %sveltekit.head%
+</head>
 
-      @font-face {
-        font-family: "SWR-VAR-Text";
-        font-weight: 100 900;
-        font-stretch: normal;
-        font-display: swap;
-        src: url("https://www.swr.de/assets/fonts/swr_type/SWR_VAR_WEB/SWR-VAR-Text.woff2")
-          format("woff2");
-      }
-      * {
-        margin: 0;
-        padding: 0;
-        font-family: inherit;
-        font-size: inherit;
-        color: inherit;
-      }
-    </style>
-    <div class="swrdata-embed">%sveltekit.body%</div>
-  </body>
+<body>
+  <style>
+    @font-face {
+      font-family: "SWR-VAR-Sans";
+      font-weight: 100 900;
+      font-stretch: normal;
+      font-display: swap;
+      src: url("https://www.swr.de/assets/fonts/swr_type/SWR_VAR_WEB/SWR-VAR-Sans.woff2") format("woff2");
+    }
+
+    @font-face {
+      font-family: "SWR-VAR-Text";
+      font-weight: 100 900;
+      font-stretch: normal;
+      font-display: swap;
+      src: url("https://www.swr.de/assets/fonts/swr_type/SWR_VAR_WEB/SWR-VAR-Text.woff2") format("woff2");
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      box-sizing: border-box;
+
+    }
+  </style>
+  <div class="swrdata-embed">%sveltekit.body%</div>
+</body>
+
 </html>
