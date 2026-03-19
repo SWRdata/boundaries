@@ -9,10 +9,10 @@
 		"sync": "svelte-kit sync"
 	},
 	"devDependencies": {
-		"@sveltejs/kit": "^2.22.2",
-		"@sveltejs/adapter-auto": "^3.0.8",
+		"@sveltejs/kit": "^2.55.0",
+		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/adapter-static": "^3.0.8",
-		"@sveltejs/vite-plugin-svelte": "^5.0.3",
+		"@sveltejs/vite-plugin-svelte": "^7.0.0",
 		"dotenv": "^16.4.7",
 		"prettier": "^3.5.3",
 		"prettier-plugin-svelte": "^3.3.3",
@@ -20,8 +20,8 @@
 		"sass-embedded": "^1.89.0",
 		"svelte": "^5.23.0",
 		"svelte-preprocess": "^6.0.3",
-		"vite": "^6.0.0",
-		"vitest": "^3.0.8"
+		"vite": "^8.0.0",
+		"vitest": "^4.1.0"
 	},
 	"dependencies": {
 		"@swr-data-lab/components": "^3.2",
