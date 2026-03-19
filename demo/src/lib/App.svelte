@@ -110,7 +110,7 @@
 			filter={['==', 'admin_level', 2]}
 			paint={{
 				'line-width': 1.5,
-				'line-color': tokens.shades.gray.dark1,
+				'line-color': tokens.shades.gray.dark2,
 				'line-opacity': 1,
 			}}
 		/>

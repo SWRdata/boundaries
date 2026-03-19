@@ -93,7 +93,7 @@ map.on("load", () => {
 	<header class="header">
 		<span class="eyebrow">SWR Data Lab</span>
 		<h1>Boundaries</h1>
-		<p class="intro">Ready-to-use, timestamped boundary data for Germany in the versatiles format.</p>
+		<p class="intro">Ready-to-use, timestamped boundary data for Germany in the Versatiles format.</p>
 
 		<form>
 			<div class="input">
@@ -143,8 +143,7 @@ map.on("load", () => {
 		{/each}
 	</ul>
 	<p class="footer">
-		<a href="https://github.com/SWRdata/boundaries">Docs</a>
-		<a href="https://github.com/SWRdata/boundaries/issues">Issues</a>
+		<a href="https://github.com/SWRdata/boundaries">Github</a>
 		<span>© {new Date().getFullYear()}</span>
 	</p>
 </div>
