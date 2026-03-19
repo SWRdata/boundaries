@@ -155,7 +155,7 @@ map.on("load", () => {
 		top: 0.5rem;
 		left: 0.5rem;
 		right: 0.5rem;
-		max-width: 20em;
+		max-width: 22em;
 		z-index: 100;
 		background: var(--color-pageFill);
 		padding: 0.85rem;
