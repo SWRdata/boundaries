@@ -8,7 +8,7 @@ Ready-to-use, timestamped boundary data for Germany in the versatiles format.
 
 `https://static.datenhub.net/data/boundaries/[TILESET]_[TIMESTAMP].versatiles?{z}/{x}/{y}`
 
-See [demo](https://static.datenhub.net/apps/boundaries/main/index.html) for code samples.
+See [demo](https://static.datenhub.net/apps/boundaries/main/index.html) for more detailed code samples. Note: These tilesets require [manual attribution](https://maplibre.org/maplibre-gl-js/docs/API/interfaces/Source/#attribution).
 
 ## Tilesets
 
@@ -25,9 +25,9 @@ Available timestamps: `2025-01-01`, `2024-01-01`
 | ------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `id`    | Sequential ID unique to the tileset                                                                                           |
 | `ars`   | 12-digit [Amtlicher Regionalschlüssel](https://de.wikipedia.org/wiki/Amtlicher_Gemeindeschl%C3%BCssel#Regionalschl%C3%BCssel) |
+| `name`  | Normalised feature name                                                                                                       |
 | `land`  | Two-digit ID indicating the Bundesland containing the feature or the feature itself)                                          |
 | `level` | Administrative hierarchy level; lower levels represent larger feautres                                                        |
-| `name`  | Normalised feature name                                                                                                       |
 
 ## Contributing
 
@@ -44,4 +44,6 @@ Available timestamps: `2025-01-01`, `2024-01-01`
 
 ## Prior work
 
-- [Polylabel](https://github.com/mapbox/polylabel)
+- [verastiles-rs](https://github.com/versatiles-org/versatiles-rs)
+- [tippecanoe](https://github.com/felt/tippecanoe)
+- [polylabel](https://github.com/mapbox/polylabel)
