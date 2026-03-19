@@ -14,8 +14,8 @@ See [demo](https://static.datenhub.net/apps/boundaries/main/index.html) for code
 
 | Name               | Description                                         | Source                                                                                                                                                | Timestamps                 |
 | ------------------ | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| `admin_boundaries` | Staat, Länder, Kreise, Gemeinden 1:250,000          | [BKG VG250](https://gdz.bkg.bund.de/index.php/default/digitale-geodaten/verwaltungsgebiete/verwaltungsgebiete-1-250-000-stand-01-01-vg250-01-01.html) | `2024-01-01`, `2025-01-01` |
-| `admin_labels`     | Label points for all features in `admin_boundaries` | Derived from `admin_boundaries` using [polylabel](https://github.com/mapbox/polylabel) + manual adjustments                                           | `2024-01-01`, `2025-01-01` |
+| `admin_boundaries` | Staat, Länder, Kreise, Gemeinden 1:250,000          | [BKG VG250](https://gdz.bkg.bund.de/index.php/default/digitale-geodaten/verwaltungsgebiete/verwaltungsgebiete-1-250-000-stand-01-01-vg250-01-01.html) | `2025-01-01`, `2024-01-01` |
+| `admin_labels`     | Label points for all features in `admin_boundaries` | Derived from `admin_boundaries` using [polylabel](https://github.com/mapbox/polylabel) + manual adjustments                                           | `2025-01-01`, `2024-01-01` |
 
 ### Fields
 
