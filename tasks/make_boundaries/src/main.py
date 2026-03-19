@@ -17,8 +17,8 @@ gcs_bucket = "datenhub-net-static"
 gcs_path = "data/boundaries/"
 min_year = 2024
 
-raw_dir = "./tmp/raw"
-processed_dir = "./tmp/processed"
+raw_dir = "./tmp/raw/"
+processed_dir = "./tmp/processed/"
 
 
 tilesets: Dict[str, Tileset] = {}
