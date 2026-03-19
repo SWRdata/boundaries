@@ -9,7 +9,7 @@
 		"sync": "svelte-kit sync"
 	},
 	"devDependencies": {
-		"@sveltejs/kit": "^2.22.2",
+		"@sveltejs/kit": "^2.55.0",
 		"@sveltejs/adapter-auto": "^3.0.8",
 		"@sveltejs/adapter-static": "^3.0.8",
 		"@sveltejs/vite-plugin-svelte": "^5.0.3",
