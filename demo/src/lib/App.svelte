@@ -137,7 +137,7 @@
 				type="symbol"
 				filter={['==', 'admin_level', filter]}
 				layout={{
-					'text-size': 15,
+					'text-size': 16,
 					'text-max-width': 5,
 					'text-font': ['swr_sans_medium'],
 					'text-field': '{name}',

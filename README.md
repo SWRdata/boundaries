@@ -1,6 +1,6 @@
 # SWR Data Lab Boundaries
 
-Timestamped geographic boundary data for Germany in the versatiles format.
+Ready-to-use, timestamped boundary data for Germany in the versatiles format.
 
 [![deploy demo](https://github.com/SWRdata/boundaries/actions/workflows/deploy-demo.yaml/badge.svg)](https://github.com/SWRdata/boundaries/actions/workflows/deploy-demo.yaml) [![deploy pipeline](https://github.com/SWRdata/boundaries/actions/workflows/deploy-pipeline.yaml/badge.svg)](https://github.com/SWRdata/boundaries/actions/workflows/deploy-pipeline.yaml)
 
@@ -12,10 +12,12 @@ See [demo](https://static.datenhub.net/apps/boundaries/main/index.html) for code
 
 ## Tilesets
 
-| Name               | Description                                         | Source                                                                                                                                                | Timestamps                 |
-| ------------------ | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| `admin_boundaries` | Staat, Länder, Kreise, Gemeinden 1:250,000          | [BKG VG250](https://gdz.bkg.bund.de/index.php/default/digitale-geodaten/verwaltungsgebiete/verwaltungsgebiete-1-250-000-stand-01-01-vg250-01-01.html) | `2025-01-01`, `2024-01-01` |
-| `admin_labels`     | Label points for all features in `admin_boundaries` | Derived from `admin_boundaries` using [polylabel](https://github.com/mapbox/polylabel) + manual adjustments                                           | `2025-01-01`, `2024-01-01` |
+| Name               | Description                                         | Source                                                                                                                                                | License                                                                                           |
+| ------------------ | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `admin_boundaries` | Staat, Länder, Kreise, Gemeinden 1:250,000          | [BKG VG250](https://gdz.bkg.bund.de/index.php/default/digitale-geodaten/verwaltungsgebiete/verwaltungsgebiete-1-250-000-stand-01-01-vg250-01-01.html) | [DNN 2.0](https://sgx.geodatenzentrum.de/web_public/gdz/lizenz/deu/nutzungsbedingungen_vg250.pdf) |
+| `admin_labels`     | Label points for all features in `admin_boundaries` | Derived from `admin_boundaries`                                                                                                                       | [DNN 2.0](https://sgx.geodatenzentrum.de/web_public/gdz/lizenz/deu/nutzungsbedingungen_vg250.pdf) |
+
+Available timestamps: `2025-01-01`, `2024-01-01`
 
 ### Fields
 
@@ -39,3 +41,7 @@ See [demo](https://static.datenhub.net/apps/boundaries/main/index.html) for code
 ### Demo page
 
 - `cd demo && npm i && npm run start`
+
+## Prior work
+
+- [Polylabel](https://github.com/mapbox/polylabel)

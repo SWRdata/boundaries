@@ -90,42 +90,44 @@ map.on("load", () => {
 </svelte:head>
 
 <div class="container">
-	<span class="eyebrow">SWR Data Lab</span>
-	<h1>Boundaries</h1>
+	<header class="header">
+		<span class="eyebrow">SWR Data Lab</span>
+		<h1>Boundaries</h1>
+		<p class="intro">Ready-to-use, timestamped boundary data for Germany in the versatiles format.</p>
 
-	<form>
-		<div class="input">
-			<label for="date-select">Date</label>
-			<select name="date-select" bind:value={date}>
-				{#each dates as d}
-					<option value={d}>{d}</option>
-				{/each}
-			</select>
-		</div>
-		<div class="input">
-			<label for="level-select">Admin level</label>
-			<select name="level-select" bind:value={filter}>
-				{#each levels as l}
-					<option value={l}>{l}</option>
-				{/each}
-			</select>
-		</div>
-		<div class="input">
-			<label for="labels-select">Labels</label>
-			<select name="level-select" bind:value={showLabels}>
-				{#each labels as l}
-					<option value={l}>{l}</option>
-				{/each}
-			</select>
-		</div>
-	</form>
+		<form>
+			<div class="input">
+				<label for="date-select">Date</label>
+				<select name="date-select" bind:value={date}>
+					{#each dates as d}
+						<option value={d}>{d}</option>
+					{/each}
+				</select>
+			</div>
+			<div class="input">
+				<label for="level-select">Admin level</label>
+				<select name="level-select" bind:value={filter}>
+					{#each levels as l}
+						<option value={l}>{l}</option>
+					{/each}
+				</select>
+			</div>
+			<div class="input">
+				<label for="labels-select">Labels</label>
+				<select name="level-select" bind:value={showLabels}>
+					{#each labels as l}
+						<option value={l}>{l}</option>
+					{/each}
+				</select>
+			</div>
+		</form>
+	</header>
 
-	<h2>Usage</h2>
 	<ul class="usages">
 		{#each Object.entries(usages) as [key, value], i}
 			{@const code = value.trim()}
 			<li>
-				<details open={i === 0}>
+				<details>
 					<summary>{key}</summary>
 					<div class="code">
 						{#if key.includes('Components')}
@@ -160,14 +162,23 @@ map.on("load", () => {
 		border: 1px solid rgba(black, 0.75);
 	}
 
+	.header {
+		padding-bottom: 0.5em;
+		border-bottom: 1px solid var(--gray-light-2);
+	}
+
 	.eyebrow {
 		font-size: var(--fs-small-3);
 		display: block;
 	}
+
 	h1 {
 		font-weight: 700;
 		font-size: var(--fs-large-2);
-		margin-bottom: 0.75em;
+	}
+
+	.intro {
+		margin-bottom: 1.5em;
 	}
 
 	h2 {
@@ -240,7 +251,7 @@ map.on("load", () => {
 		align-items: baseline;
 		a {
 			text-decoration: none;
-			color: var(--blue-dark-3);
+			color: var(--gray-dark-4);
 			&:hover,
 			&:focus-visible {
 				text-decoration: underline;
