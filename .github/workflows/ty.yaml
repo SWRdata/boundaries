@@ -20,11 +20,15 @@ permissions:
 jobs:
   ty:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tasks/make_boundaries
     steps:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
         with:
           enable_cache: true
-      - name: ty
-        working-directory: tasks/make_boundaries/
+      - name: uv sync
+        run: uv sync
+      - name: ty check
         run: uvx ty check src
