@@ -1,0 +1,10 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/demo"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "uv"
+    directory: "/tasks/make_boundaries"
+    schedule:
+      interval: "monthly"
