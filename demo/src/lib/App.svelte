@@ -55,7 +55,7 @@
 		})}
 		cursor={hovered ? 'pointer' : ''}
 		projection={{ type: 'globe' }}
-		showDebug
+		showDebug={dev}
 	>
 		{#each tileUrls as [id, url]}
 			{#if url.includes('tiles.json')}

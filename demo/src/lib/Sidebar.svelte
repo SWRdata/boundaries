@@ -2,6 +2,7 @@
 	import Highlight, { HighlightSvelte } from 'svelte-highlight'
 	import typescript from 'svelte-highlight/languages/typescript'
 	import githubStyle from 'svelte-highlight/styles/github'
+	import siteData from '$lib/site.json'
 
 	let { date = $bindable(), dates, filter = $bindable(), showLabels = $bindable(), levels, labels } = $props()
 
@@ -93,7 +94,7 @@ map.on("load", () => {
 	<header class="header">
 		<span class="eyebrow">SWR Data Lab</span>
 		<h1>Boundaries</h1>
-		<p class="intro">Ready-to-use, timestamped boundary data for Germany in the Versatiles format.</p>
+		<p class="intro">{siteData.description}</p>
 
 		<form>
 			<div class="input">
