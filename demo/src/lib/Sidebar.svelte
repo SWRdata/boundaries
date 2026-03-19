@@ -1,219 +1,250 @@
 <script>
-  import Highlight, { HighlightSvelte } from "svelte-highlight";
-  import typescript from "svelte-highlight/languages/typescript";
-  import githubStyle from "svelte-highlight/styles/github";
+	import Highlight, { HighlightSvelte } from 'svelte-highlight'
+	import typescript from 'svelte-highlight/languages/typescript'
+	import githubStyle from 'svelte-highlight/styles/github'
 
-  let {
-    date = $bindable(),
-    dates,
-    filter = $bindable(),
-    showLabels = $bindable(),
-    levels,
-  } = $props();
+	let { date = $bindable(), dates, filter = $bindable(), showLabels = $bindable(), levels, labels } = $props()
 
-  const usages = $derived({
-    Javascript: `
+	const boundaries_url = $derived(`https://static.datenhub.net/data/boundaries/admin_boundaries_${date}.versatiles?{z}/{x}/{y}`)
+	const labels_url = $derived(`https://static.datenhub.net/data/boundaries/admin_labels_${date}.versatiles?{z}/{x}/{y}`)
+	const attribution = $derived(`© BKG (${date.slice(0, 4)}) dl-de/by-2-0`)
+
+	const usages = $derived({
+		'Javascript/Maplibre': `
 const map = new maplibregl.Map({
     container: 'map',
     style: 'https://tiles.openfreemap.org/styles/bright',
-    zoom: 13,
-    center: [50, 9]
+    center: [50, 9],
+    zoom: 13
 });
 
 map.on("load", () => {
-  map.addSource("boundaries", {
+  map.addSource("admin_boundaries", {
     type: "vector",
-    tiles: ["https://tiles.datenhub.net/tiles/boundaries/{z}/{x}/{y}"]
-    maxzoom: 8,
-    attribution: "© BKG (${date.slice(0, 4)}) dl-de/by-2-0"
-  });
+    tiles: ["${boundaries_url}"]
+    attribution: "${attribution}"
+  });${
+		showLabels !== 'None'
+			? `
+  map.addSource("admin_labels", {
+      type: "symbol",
+      filter={['==', 'admin_level', ${filter}]}
+      tiles: ["${labels_url}"]
+      attribution: "${attribution}"
+  });`
+			: ''
+	}
   map.addLayer({
-    id: "states",
+    id: "boundaries",
     type: "line",
-    source: "boundaries",
-    sourceLayer: "administrative"
-    filter: ["==", "admin_level", ${filter}]
+    source: "admin_boundaries",
+    filter: ["==", "admin_level", ${filter}],
     paint: {"line-color": "red"}
   });
+  ${
+		showLabels !== 'None'
+			? `map.addLayer({
+    id: "labels",
+    type: "symbol",
+    source: "admin_labels",
+    filter: ["==", "admin_level", ${filter}],
+    layout: {'text-field': '{name}'}
+  });`
+			: ''
+	}
 })
 `,
-    "Data Lab Components (Svelte)": `
+		'SWRData/components': `
 <Map style={SWRDataLabLight()}>
-  <VectorTileSource
-    id="boundaries"
-    url="https://tiles.datenhub.net/tiles/boundaries/tiles.json">
-  </VectorTileSource>
+  <VectorTileSource id="admin_boundaries" tiles=["${boundaries_url}"] attribution="${attribution}"/>${
+		showLabels !== 'None'
+			? `
+  <VectorTileSource id="admin_labels" tiles=["${labels_url}"] attribution="${attribution}"/>`
+			: ''
+	}
   <VectorLayer
     type="line"
-    id="states"
-    sourceId="boundaries"
-    sourceLayer="administrative"
+    id="boundaries"
+    sourceId="admin_boundaries"
     filter={["==", "admin_level", ${filter}]}
     paint={{"line-color": "red"}}
-  ></VectorLayer>
+  />
+  ${
+		showLabels !== 'None'
+			? `<VectorLayer
+    type="symbol"
+    id="labels"
+    sourceId="admin_labels"
+    filter={["==", "admin_level", ${filter}]}
+    layout={{'text-field': '{name}'}}
+  />`
+			: ''
+	}
 </Map>
 `,
-  });
+	})
 </script>
 
 <svelte:head>
-  {@html githubStyle}
+	{@html githubStyle}
 </svelte:head>
 
 <div class="container">
-  <span class="eyebrow">SWR Data Lab</span>
-  <h1>Boundaries</h1>
+	<span class="eyebrow">SWR Data Lab</span>
+	<h1>Boundaries</h1>
 
-  <form>
-    <div class="input">
-      <label for="date-select">Date</label>
-      <select name="date-select" bind:value={date}>
-        {#each dates as d}
-          <option value={d}>{d}</option>
-        {/each}
-      </select>
-    </div>
-    <div class="input">
-      <label for="level-select">Admin level</label>
-      <select name="level-select" bind:value={filter}>
-        {#each levels as l}
-          <option value={l}>{l}</option>
-        {/each}
-      </select>
-    </div>
-    <div class="input">
-      <label for="labels-switch">Labels</label>
-      <input
-        name="labels-switch"
-        id="labels-switch"
-        type="checkbox"
-        switch
-        bind:checked={showLabels}
-      />
-    </div>
-  </form>
+	<form>
+		<div class="input">
+			<label for="date-select">Date</label>
+			<select name="date-select" bind:value={date}>
+				{#each dates as d}
+					<option value={d}>{d}</option>
+				{/each}
+			</select>
+		</div>
+		<div class="input">
+			<label for="level-select">Admin level</label>
+			<select name="level-select" bind:value={filter}>
+				{#each levels as l}
+					<option value={l}>{l}</option>
+				{/each}
+			</select>
+		</div>
+		<div class="input">
+			<label for="labels-select">Labels</label>
+			<select name="level-select" bind:value={showLabels}>
+				{#each labels as l}
+					<option value={l}>{l}</option>
+				{/each}
+			</select>
+		</div>
+	</form>
 
-  <h2>Usage</h2>
-  <ul class="usages">
-    {#each Object.entries(usages) as [key, value], i}
-      {@const code = value.trim()}
-      <li>
-        <details open={i === 0}>
-          <summary>{key}</summary>
-          <div class="code">
-            {#if key.includes("Components")}
-              <HighlightSvelte {code}></HighlightSvelte>
-            {:else}
-              <Highlight language={typescript} {code}></Highlight>
-            {/if}
-          </div>
-        </details>
-      </li>
-    {/each}
-  </ul>
-  <p class="footer">
-    <a href="https://github.com/SWRdata/boundaries">Docs</a>
-    <span>© {new Date().getFullYear()}</span>
-  </p>
+	<h2>Usage</h2>
+	<ul class="usages">
+		{#each Object.entries(usages) as [key, value], i}
+			{@const code = value.trim()}
+			<li>
+				<details open={i === 0}>
+					<summary>{key}</summary>
+					<div class="code">
+						{#if key.includes('Components')}
+							<HighlightSvelte {code}></HighlightSvelte>
+						{:else}
+							<Highlight language={typescript} {code}></Highlight>
+						{/if}
+					</div>
+				</details>
+			</li>
+		{/each}
+	</ul>
+	<p class="footer">
+		<a href="https://github.com/SWRdata/boundaries">Docs</a>
+		<span>© {new Date().getFullYear()}</span>
+	</p>
 </div>
 
 <style lang="scss">
-  .container {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    right: 0.5rem;
-    max-width: 20em;
-    z-index: 100;
-    background: var(--color-pageFill);
-    padding: 0.75rem;
-    border-radius: 3px;
-    padding-right: 1.25rem;
-    box-shadow: 0px 1px 3px rgba(black, 0.1);
-    border: 1px solid rgba(black, 0.75);
-  }
+	.container {
+		position: absolute;
+		top: 0.5rem;
+		left: 0.5rem;
+		right: 0.5rem;
+		max-width: 20em;
+		z-index: 100;
+		background: var(--color-pageFill);
+		padding: 0.75rem;
+		border-radius: 3px;
+		padding-right: 1.25rem;
+		box-shadow: 0px 1px 3px rgba(black, 0.1);
+		border: 1px solid rgba(black, 0.75);
+	}
 
-  .eyebrow {
-    font-size: var(--fs-small-3);
-    display: block;
-  }
-  h1 {
-    font-weight: 700;
-    font-size: var(--fs-large-2);
-    margin-bottom: 0.5em;
-  }
+	.eyebrow {
+		font-size: var(--fs-small-3);
+		display: block;
+	}
+	h1 {
+		font-weight: 700;
+		font-size: var(--fs-large-2);
+		margin-bottom: 0.75em;
+	}
 
-  form {
-    display: flex;
-    gap: 0.75em;
-    margin-bottom: 1em;
-  }
-  select {
-    background: transparent;
-    padding: 0.2rem 0.45rem;
-    border: 1px solid var(--gray-light-1);
-    border-radius: 2px;
-    width: 100%;
-    font-size: var(--fs-small-2);
-  }
+	h2 {
+		font-weight: 600;
+		font-size: var(--fs-small-1);
+	}
 
-  label {
-    display: block;
-    font-size: var(--fs-small-3);
-    margin-bottom: 0.1em;
-  }
+	form {
+		display: flex;
+		gap: 0.75em;
+		margin-bottom: 0.5em;
+	}
+	select {
+		background: transparent;
+		padding: 0.2rem 0.45rem;
+		border: 1px solid var(--gray-light-1);
+		border-radius: 2px;
+		width: 100%;
+		font-size: var(--fs-small-2);
+	}
 
-  input[type="checkbox"] {
-    display: block;
-  }
-  .input {
-    display: flex;
-    flex-flow: column;
-    gap: 0.2em;
-    align-items: flex-start;
-  }
+	label {
+		display: block;
+		font-size: var(--fs-small-3);
+		margin-bottom: 0.1em;
+	}
 
-  .usages {
-    display: flex;
-    flex-flow: column;
-    list-style: none;
-    li {
-      border-bottom: 1px solid var(--gray-light-2);
-      &:has([open]) {
-        border-bottom: 0;
-      }
-    }
-  }
+	.input {
+		display: flex;
+		flex-flow: column;
+		gap: 0.2em;
+		flex-basis: 0;
+		flex-grow: 1;
+		align-items: flex-start;
+	}
 
-  summary {
-    font-size: var(--fs-small-2);
-    padding: 0.5em 0;
-    cursor: pointer;
-    user-select: none;
-  }
+	.usages {
+		display: flex;
+		flex-flow: column;
+		list-style: none;
+		li {
+			border-bottom: 1px solid var(--gray-light-2);
+			&:has([open]) {
+				border-bottom: 0;
+			}
+		}
+	}
 
-  .code {
-    font-size: 0.9em;
-    border: 1px solid var(--gray-light-2);
-    font-family: monospace;
-  }
-  :global(code) {
-    scrollbar-width: thin;
-  }
-  .footer {
-    font-size: var(--fs-small-3);
-    margin-top: 1em;
-    color: var(--gray-dark-1);
-    display: flex;
-    gap: 0.75em;
-    align-items: baseline;
-    a {
-      text-decoration: none;
-      color: var(--blue-dark-3);
-      &:hover,
-      &:focus-visible {
-        text-decoration: underline;
-      }
-    }
-  }
+	summary {
+		font-size: var(--fs-small-2);
+		padding: 0.5em 0;
+		cursor: pointer;
+		user-select: none;
+	}
+
+	.code {
+		font-size: 0.9em;
+		border: 1px solid var(--gray-light-2);
+		font-family: monospace;
+	}
+	:global(code) {
+		scrollbar-width: thin;
+	}
+	.footer {
+		font-size: var(--fs-small-3);
+		margin-top: 1em;
+		color: var(--gray-dark-1);
+		display: flex;
+		gap: 0.75em;
+		align-items: baseline;
+		a {
+			text-decoration: none;
+			color: var(--blue-dark-3);
+			&:hover,
+			&:focus-visible {
+				text-decoration: underline;
+			}
+		}
+	}
 </style>

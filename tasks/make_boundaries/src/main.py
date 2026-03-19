@@ -15,7 +15,7 @@ from usecases.upload_blob import upload_blob
 gcs_project = "swr-data-1"
 gcs_bucket = "datenhub-net-static"
 gcs_path = "data/boundaries/"
-min_year = 2025
+min_year = 2024
 
 raw_dir = "./tmp/raw"
 processed_dir = "./tmp/processed"
