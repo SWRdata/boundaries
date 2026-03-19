@@ -1,6 +1,6 @@
 # SWR Data Lab Boundaries
 
-Ready-to-use, timestamped boundary data for Germany in the versatiles format.
+Ready-to-use, timestamped, tiled boundary data for Germany.
 
 [![deploy demo](https://github.com/SWRdata/boundaries/actions/workflows/deploy-demo.yaml/badge.svg)](https://github.com/SWRdata/boundaries/actions/workflows/deploy-demo.yaml) [![deploy pipeline](https://github.com/SWRdata/boundaries/actions/workflows/deploy-pipeline.yaml/badge.svg)](https://github.com/SWRdata/boundaries/actions/workflows/deploy-pipeline.yaml) [![ty](https://github.com/SWRdata/boundaries/actions/workflows/ty.yaml/badge.svg)](https://github.com/SWRdata/boundaries/actions/workflows/ty.yaml)
 
