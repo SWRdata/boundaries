@@ -31,6 +31,7 @@ RUN curl -Ls "https://github.com/versatiles-org/versatiles-rs/releases/latest/do
 COPY src /app/src
 COPY pyproject.toml /app
 COPY uv.lock /app
+COPY label_substitutions.geojson /app
 
 WORKDIR /app
 RUN uv sync
