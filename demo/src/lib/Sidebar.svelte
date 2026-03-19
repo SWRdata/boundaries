@@ -123,6 +123,8 @@ map.on("load", () => {
 		</form>
 	</header>
 
+	<input class="link" value={`https://static.datenhub.net/data/boundaries/admin_boundaries_${date}.versatiles?{z}/{x}/{y}`} />
+
 	<ul class="usages">
 		{#each Object.entries(usages) as [key, value], i}
 			{@const code = value.trim()}
@@ -165,7 +167,6 @@ map.on("load", () => {
 
 	.header {
 		padding-bottom: 0.5em;
-		border-bottom: 1px solid var(--gray-light-2);
 	}
 
 	.eyebrow {
@@ -236,6 +237,23 @@ map.on("load", () => {
 		font-size: 0.9em;
 		border: 1px solid var(--gray-light-2);
 		font-family: monospace;
+	}
+
+	.link {
+		display: block;
+		white-space: nowrap;
+		padding: 0.4em 0.5em;
+		margin-bottom: 0.2em;
+		scrollbar-width: none;
+		overflow: auto;
+		border: 1px solid transparent;
+		width: 100%;
+		font-family: monospace;
+		background: #f7f7f7;
+		&:focus {
+			outline: none;
+			border: 1px solid var(--gray-dark-1);
+		}
 	}
 	:global(code) {
 		scrollbar-width: thin;
