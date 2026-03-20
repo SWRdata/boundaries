@@ -1,4 +1,5 @@
 import datetime
+import os
 from typing import Dict
 
 import geopandas as gp
@@ -33,8 +34,11 @@ def make_admin_labels(cache_dir: str, output_dir: str, date: datetime.date):
 
     # 1. Fetch the BKG data we need
     ds = date.strftime("%Y-%m-%d")
-    json_path = f"{cache_dir}/admin_labels_{ds}.geojson"
-    versatiles_path = f"{output_dir}/admin_labels_{ds}.versatiles"
+
+    json_path = os.path.join(cache_dir, f"admin_labels_{ds}.geojson")
+    versatiles_path = os.path.join(output_dir, f"admin_labels_{ds}.versatiles")
+    tilejson_path = versatiles_path.replace(".versatiles", ".json")
+
     fp = "vg250_01-01.utm32s.shape.ebenen/vg250_ebenen_0101"
 
     zip_name = "vg250_01-01.utm32s.shape.ebenen.zip"
@@ -123,9 +127,11 @@ def make_admin_labels(cache_dir: str, output_dir: str, date: datetime.date):
 
     # 4. Convert to versatiles
     try:
-        make_versatiles(json_path, versatiles_path, date, ["--base-zoom=5"])
+        make_versatiles(
+            json_path, versatiles_path, tilejson_path, date, ["--base-zoom=5"]
+        )
     except Exception:
         print(f"Failed to build {versatiles_path}")
         return
 
-    return versatiles_path
+    return [versatiles_path]

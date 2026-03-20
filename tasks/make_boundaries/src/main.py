@@ -88,7 +88,7 @@ def run():
         print(f"Making {k}...")
         f = tilesets[k].make()
         if f:
-            new_files.append(f)
+            new_files.extend(f)
         else:
             failed_files.append(k)
 

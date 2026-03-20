@@ -15,5 +15,5 @@ class Tileset:
         self.make_fn = make_fn
         self.make_args = make_args
 
-    def make(self) -> str | None:
+    def make(self) -> list[str] | None:
         return self.make_fn(**self.make_args)
