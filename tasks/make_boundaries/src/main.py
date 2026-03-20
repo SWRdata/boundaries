@@ -19,6 +19,7 @@ min_year = 2024
 
 raw_dir = "./tmp/raw/"
 processed_dir = "./tmp/processed/"
+manifest_path = os.path.join(processed_dir, "manifest.csv")
 
 
 tilesets: Dict[str, Tileset] = {}
@@ -91,7 +92,11 @@ def run():
         else:
             failed_files.append(k)
 
-    for f in new_files:
+    with open(manifest_path, "w") as f:
+        f.write(f"name\n{'\n'.join([*existing_files, *new_files])}")
+        print(f"Wrote manifest to {manifest_path}")
+
+    for f in [*new_files, manifest_path]:
         upload_blob(
             storage_client, f, gcs_bucket, os.path.join(gcs_path, os.path.basename(f))
         )
