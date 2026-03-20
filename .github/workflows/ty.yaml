@@ -27,15 +27,15 @@ jobs:
       - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
-      - name: uv sync
+      - name: uv sync tasks
         working-directory: tasks/make_boundaries
         run: uv sync
-      - name: ty check
+      - name: ty check tasks
         working-directory: tasks/make_boundaries
         run: uvx ty check src
-      - name: uv sync
+      - name: uv sync scripts
         working-directory: scripts
         run: uv sync
-      - name: ty check
+      - name: ty check scripts
         working-directory: scripts
         run: uvx ty check
