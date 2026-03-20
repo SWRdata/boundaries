@@ -14,10 +14,16 @@ from usecases.make_versatiles import make_versatiles
 label_subs: Dict[str, geometry.Point] = {}
 
 
-def get_label_point(x: geometry.Polygon):
+def get_label_point(x: geometry.Polygon | geometry.MultiPolygon):
     xfact = 0.7
+    geom = (
+        max(x.geoms, key=lambda x: x.area)
+        if isinstance(x, geometry.MultiPolygon)
+        else x
+    )
+
     return affinity.scale(
-        ops.polylabel(affinity.scale(x, xfact=xfact, yfact=1), 0.1),
+        ops.polylabel(affinity.scale(geom, xfact=xfact, yfact=1), 0.1),
         xfact=1 / xfact,
         yfact=1,
     )
