@@ -4,11 +4,24 @@
   import githubStyle from "svelte-highlight/styles/github";
   import siteData from "$lib/site.json";
 
-  let { date = $bindable(), timestamps, filter = $bindable(), showLabels = $bindable(), levels, labels } = $props();
+  let {
+    date = $bindable(),
+    timestamps,
+    filter = $bindable(),
+    showLabels = $bindable(),
+    levels,
+    labels,
+  } = $props();
 
-  const boundaries_url = $derived(`https://static.datenhub.net/data/boundaries/admin_boundaries_${date}.versatiles?{z}/{x}/{y}`);
-  const labels_url = $derived(`https://static.datenhub.net/data/boundaries/admin_labels_${date}.versatiles?{z}/{x}/{y}`);
-  const attribution = $derived(date ? `© BKG (${date.slice(0, 4)}) dl-de/by-2-0` : "");
+  const boundaries_url = $derived(
+    `https://static.datenhub.net/data/boundaries/admin_boundaries_${date}.versatiles?{z}/{x}/{y}`,
+  );
+  const labels_url = $derived(
+    `https://static.datenhub.net/data/boundaries/admin_labels_${date}.versatiles?{z}/{x}/{y}`,
+  );
+  const attribution = $derived(
+    date ? `© BKG (${date.slice(0, 4)}) dl-de/by-2-0` : "",
+  );
 
   const usages = $derived({
     "Javascript/Maplibre": `
@@ -123,9 +136,11 @@ map.on("load", () => {
       </div>
     </form>
   </header>
-
-  <input class="link" value={`https://static.datenhub.net/data/boundaries/admin_boundaries_${date}.versatiles?{z}/{x}/{y}`} />
-
+  <p class="url-label">Tile URL</p>
+  <input
+    class="link"
+    value={`https://static.datenhub.net/data/boundaries/admin_boundaries_${date}.versatiles?{z}/{x}/{y}`}
+  />
   <ul class="usages">
     {#each Object.entries(usages) as [key, value], i}
       {@const code = value.trim()}
@@ -203,6 +218,11 @@ map.on("load", () => {
     display: block;
     font-size: var(--fs-small-3);
     margin-bottom: 0.1em;
+  }
+
+  .url-label {
+    font-size: var(--fs-small-2);
+    margin-bottom: 0.25em;
   }
 
   .input {
