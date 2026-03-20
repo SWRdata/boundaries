@@ -1,0 +1,9 @@
+[project]
+name = "scripts"
+version = "0.1.0"
+description = "Utility scripts"
+requires-python = ">=3.12"
+dependencies = [
+    "requests>=2.32.5",
+    "ty>=0.0.24",
+]
