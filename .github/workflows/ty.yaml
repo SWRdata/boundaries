@@ -7,10 +7,12 @@ on:
       - main
     paths:
       - "tasks/make_boundaries/**"
+      - "scripts/**"
   pull_request:
     types: [opened, synchronize]
     paths:
       - "tasks/make_boundaries/**"
+      - "scripts/**"
 
 permissions:
   contents: write
