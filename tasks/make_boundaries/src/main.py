@@ -93,10 +93,10 @@ def run():
             failed_files.append(k)
 
     with open(manifest_path, "w") as f:
-        f.write("\n".join([*existing_files, *new_files]))
+        f.write(f"name\n{'\n'.join([*existing_files, *new_files])}")
         print(f"Wrote manifest to {manifest_path}")
 
-    for f in [*new_files, *manifest_path]:
+    for f in [*new_files, manifest_path]:
         upload_blob(
             storage_client, f, gcs_bucket, os.path.join(gcs_path, os.path.basename(f))
         )
