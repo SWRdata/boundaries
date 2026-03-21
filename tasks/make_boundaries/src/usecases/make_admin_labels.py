@@ -66,7 +66,7 @@ def make_admin_labels(
     assert laender_labels.shape[0] == 16
     laender_labels["admin_level"] = 4
     laender_labels["kind"] = "Land"
-    laender_labels["land"] = laender["SN_L"]
+    laender_labels["land"] = laender_labels["SN_L"]
     laender_labels["geometry"] = laender_labels.geometry.apply(get_label_point)
     print(f"done ({laender_labels.shape[0]} geoms)")
 
@@ -86,7 +86,7 @@ def make_admin_labels(
     gemeinden_labels = gemeinden.loc[gemeinden["GF"] == 4]
     gemeinden_labels["admin_level"] = 8
     gemeinden_labels["kind"] = "Gemeinde"
-    gemeinden_labels["land"] = gemeinden["SN_L"]
+    gemeinden_labels["land"] = gemeinden_labels["SN_L"]
     gemeinden_labels["geometry"] = gemeinden_labels.geometry.apply(get_label_point)
     print(f"done ({gemeinden_labels.shape[0]} geoms)")
 
@@ -103,7 +103,7 @@ def make_admin_labels(
     res["name"] = res["name"].apply(lambda x: NAME_SUBS[x] if x in NAME_SUBS else x)
 
     label_subs = gp.read_file("./label_substitutions.geojson")
-    print(f"Applying {label_subs.shape[0]} manual subsititutions... ", end="")
+    print(f"Applying {label_subs.shape[0]} manual substitutions... ", end="")
 
     label_position_subs = (
         label_subs.to_crs(res.crs or "EPSG:25832")
