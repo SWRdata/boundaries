@@ -30,7 +30,9 @@ def get_label_point(x: geometry.Polygon | geometry.MultiPolygon):
     )
 
 
-def make_admin_labels(cache_dir: str, output_dir: str, date: datetime.date):
+def make_admin_labels(
+    cache_dir: str, output_dir: str, date: datetime.date
+) -> list[str]:
 
     # 1. Fetch the BKG data we need
     ds = date.strftime("%Y-%m-%d")
@@ -132,6 +134,6 @@ def make_admin_labels(cache_dir: str, output_dir: str, date: datetime.date):
         )
     except Exception:
         print(f"Failed to build {versatiles_path}")
-        return
+        return []
 
     return [versatiles_path]

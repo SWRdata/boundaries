@@ -12,7 +12,7 @@ from usecases.make_versatiles import make_versatiles
 # This is where we do content-specific processing for each admin layer
 # before merging them all into one JSON file which we convert to versatiles
 # See: https://wiki.openstreetmap.org/wiki/File:Administrative_Gliederung_Deutschlands_admin_level.png
-def make_admin(cache_dir: str, output_dir: str, date: date):
+def make_admin(cache_dir: str, output_dir: str, date: date) -> list[str]:
 
     # 1. Fetch the BKG data we need
     ds = date.strftime("%Y-%m-%d")
@@ -94,6 +94,6 @@ def make_admin(cache_dir: str, output_dir: str, date: date):
         make_versatiles(json_path, versatiles_path, tilejson_path, date)
     except Exception:
         print(f"Failed to build {versatiles_path}")
-        return
+        return []
 
     return [versatiles_path]
