@@ -1,4 +1,4 @@
-# SWR Data Lab Boundaries
+# SWRData/Boundaries
 
 Ready-to-use, timestamped, tiled boundary data for Germany.
 
