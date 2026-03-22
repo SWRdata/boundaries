@@ -2,7 +2,9 @@ import { type PageLoad } from "./$types";
 export const prerender = true;
 
 export const load: PageLoad = async ({ fetch }) => {
-  const res = await fetch("https://static.datenhub.net/data/boundaries/manifest.csv");
+  const res = await fetch(
+    "https://static.datenhub.net/data/boundaries/manifest.csv",
+  );
 
   let timestamps: string[] = [];
 
@@ -21,7 +23,9 @@ export const load: PageLoad = async ({ fetch }) => {
             return f !== null;
           }),
       ),
-    );
+    ).sort((a, b) => {
+      return b.localeCompare(a);
+    });
   }
 
   return { timestamps };
