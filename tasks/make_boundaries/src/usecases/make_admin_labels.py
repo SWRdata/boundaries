@@ -12,7 +12,10 @@ from usecases.fetch_unless_cached import fetch_unless_cached
 from usecases.make_versatiles import make_versatiles
 
 
+# Computes point of inaccessibility on stretched geometry,
+# see: https://github.com/mapbox/polylabel/pull/63#issuecomment-646107909
 def get_label_point(x: geometry.Polygon | geometry.MultiPolygon):
+
     xfact = 0.7
     geom = (
         max(x.geoms, key=lambda x: x.area)
