@@ -18,7 +18,7 @@ def get_label_point(x: geometry.Polygon | geometry.MultiPolygon):
 
     xfact = 0.7
     geom = (
-        max(x.geoms, key=lambda x: x.area)
+        max(x.geoms, key=lambda g: g.area)
         if isinstance(x, geometry.MultiPolygon)
         else x
     )
@@ -132,8 +132,8 @@ def make_admin_labels(
         make_versatiles(
             json_path, versatiles_path, tilejson_path, date, ["--base-zoom=5"]
         )
-    except Exception:
-        print(f"Failed to build {versatiles_path}")
+    except Exception as e:
+        print(f"Failed to build {versatiles_path}: {e!r}")
         return []
 
     return [versatiles_path]
