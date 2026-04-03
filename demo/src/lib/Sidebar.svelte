@@ -149,7 +149,7 @@ map.on("load", () => {
         <details>
           <summary>{key}</summary>
           <div class="code">
-            {#if key.includes("Components")}
+            {#if key.includes("components")}
               <HighlightSvelte {code}></HighlightSvelte>
             {:else}
               <Highlight language={typescript} {code}></Highlight>
