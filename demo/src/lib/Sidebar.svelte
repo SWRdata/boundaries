@@ -70,16 +70,17 @@ map.on("load", () => {
 `,
     "SWRData/components": `
 <Map style={SWRDataLabLight()}>
-  <VectorTileSource id="admin_boundaries" tiles=["${boundaries_url}"] attribution="${attribution}"/>${
+  <VectorTileSource id="admin_boundaries" tiles={["${boundaries_url}"]} attribution="${attribution}"/>${
     showLabels !== "None"
       ? `
-  <VectorTileSource id="admin_labels" tiles=["${labels_url}"] attribution="${attribution}"/>`
+  <VectorTileSource id="admin_labels" tiles={["${labels_url}"]} attribution="${attribution}"/>`
       : ""
   }
   <VectorLayer
     type="line"
     id="boundaries"
     sourceId="admin_boundaries"
+    sourceLayer="administrative"
     filter={["==", "admin_level", ${filter}]}
     paint={{"line-color": "red"}}
   />
@@ -89,6 +90,7 @@ map.on("load", () => {
     type="symbol"
     id="labels"
     sourceId="admin_labels"
+    sourceLayer="administrative"
     filter={["==", "admin_level", ${filter}]}
     layout={{'text-field': '{name}'}}
   />`
