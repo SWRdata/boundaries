@@ -35,15 +35,14 @@ const map = new maplibregl.Map({
 map.on("load", () => {
   map.addSource("admin_boundaries", {
     type: "vector",
-    tiles: ["${boundaries_url}"]
+    tiles: ["${boundaries_url}"],
     attribution: "${attribution}"
   });${
     showLabels !== "None"
       ? `
   map.addSource("admin_labels", {
-      type: "symbol",
-      filter={['==', 'admin_level', ${filter}]}
-      tiles: ["${labels_url}"]
+      type: "vector",
+      tiles: ["${labels_url}"],
       attribution: "${attribution}"
   });`
       : ""
@@ -130,7 +129,7 @@ map.on("load", () => {
       </div>
       <div class="input">
         <label for="labels-select">Labels</label>
-        <select name="level-select" bind:value={showLabels}>
+        <select name="labels-select" bind:value={showLabels}>
           {#each labels as l}
             <option value={l}>{l}</option>
           {/each}
