@@ -19,13 +19,9 @@ export const load: PageLoad = async ({ fetch }) => {
             const m = f.match(/(?:.+_)(\d+-\d+-\d+)(?:.+)/);
             return m ? m[1] : null;
           })
-          .filter((f: string | null) => {
-            return f !== null;
-          }),
+          .filter((f: string | null) => f !== null),
       ),
-    ).sort((a, b) => {
-      return b.localeCompare(a);
-    });
+    ).sort((a, b) => b.localeCompare(a));
   }
 
   return { timestamps };
