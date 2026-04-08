@@ -1,7 +1,7 @@
-import { type PageLoad } from "./$types";
+import type { LayoutServerLoad } from "./$types";
 export const prerender = true;
 
-export const load: PageLoad = async ({ fetch }) => {
+export const load: LayoutServerLoad = async ({ fetch }) => {
   const res = await fetch(
     "https://static.datenhub.net/data/boundaries/manifest.csv",
   );
@@ -19,7 +19,7 @@ export const load: PageLoad = async ({ fetch }) => {
             const m = f.match(/(?:.+_)(\d+-\d+-\d+)(?:.+)/);
             return m ? m[1] : null;
           })
-          .filter((f: string | null) => f !== null),
+          .filter((f: string | null): f is string => f !== null),
       ),
     ).sort((a, b) => b.localeCompare(a));
   }
