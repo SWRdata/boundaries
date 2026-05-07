@@ -24,7 +24,7 @@
     "vitest": "^4.1.2"
   },
   "dependencies": {
-    "@swr-data-lab/components": "^3.2",
+    "@swr-data-lab/components": "^3.4",
     "svelte-highlight": "^7.9.0"
   }
 }
