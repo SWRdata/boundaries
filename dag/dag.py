@@ -9,7 +9,6 @@ from airflow.operators.python import PythonOperator
 from airflow.providers.cncf.kubernetes.operators.pod import (
     KubernetesPodOperator,
 )
-from airflow.utils.dates import days_ago
 from airflow_basics.config_loader import load_config
 from airflow_basics.datacatalog_update_bq import update_bq_entry
 from airflow_basics.datacatalog_update_dataplex import update_dataplex
@@ -40,7 +39,7 @@ with DAG(
     max_active_runs=dag_metadata["max_active_runs"],
     catchup=dag_metadata["catchup"],
     is_paused_upon_creation=dag_metadata["is_paused_upon_creation"],
-    start_date=days_ago(dag_metadata["start_date"]),
+    start_date=dag_metadata["start_date"],
 ) as dag:
     # dummy operators for flexibility
     pipeline_start = DummyOperator(task_id="pipeline_start")
