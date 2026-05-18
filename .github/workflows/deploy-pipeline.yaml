@@ -33,7 +33,7 @@ jobs:
   reuse-deploy-data-pipeline:
     needs: check-initial-commit
     if: needs.check-initial-commit.outputs.is_initial == 'false'
-    uses: SWRData/workflows-swr-data-lab/.github/workflows/deploy_data_pipeline.yml@main
+    uses: SWRdata/workflows-swr-data-lab/.github/workflows/deploy_data_pipeline.yml@main
     secrets: inherit
     with:
       enable_cleanup: true

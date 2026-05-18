@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   reuse-build-and-deploy-node-app:
-    uses: SWRData/workflows-swr-data-lab/.github/workflows/build_and_deploy_node_app.yml@main
+    uses: SWRdata/workflows-swr-data-lab/.github/workflows/build_and_deploy_node_app.yml@main
     with:
       working_directory: 'demo'
       full_repository: ${{ github.repository }}
