@@ -6,7 +6,7 @@ dag_metadata:
   max_active_runs: 1
   catchup: False
   is_paused_upon_creation: True
-  start_date: 2026-01-01 00:00:00
+  start_date: 2026-01-01T00:00:00Z
 
   default_args:
     owner: airflow
