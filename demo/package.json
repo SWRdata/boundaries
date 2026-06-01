@@ -15,7 +15,7 @@
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "dotenv": "^17.3.1",
     "prettier": "^3.8.3",
-    "prettier-plugin-svelte": "^3.3.3",
+    "prettier-plugin-svelte": "^4.1.0",
     "sass": "^1.100.0",
     "sass-embedded": "^1.99.0",
     "svelte": "^5.55.9",
