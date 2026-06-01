@@ -16,7 +16,7 @@
     "dotenv": "^17.3.1",
     "prettier": "^3.8.3",
     "prettier-plugin-svelte": "^3.3.3",
-    "sass": "^1.89.0",
+    "sass": "^1.100.0",
     "sass-embedded": "^1.99.0",
     "svelte": "^5.55.9",
     "svelte-preprocess": "^6.0.3",
