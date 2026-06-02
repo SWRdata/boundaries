@@ -21,7 +21,7 @@
     "svelte": "^5.55.9",
     "svelte-preprocess": "^6.0.3",
     "vite": "^8.0.6",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.8"
   },
   "dependencies": {
     "@swr-data-lab/components": "^3.7",
