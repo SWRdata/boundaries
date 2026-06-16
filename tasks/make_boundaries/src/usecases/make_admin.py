@@ -57,7 +57,7 @@ def make_admin(cache_dir: str, output_dir: str, date: date) -> list[str]:
     ne_countries["kind"] = "Staat"
     ne_countries["geometry"] = ne_countries.apply(
         lambda x: (
-            x["geometry"].buffer(5_000).difference(germany_processed["geometry"][0])
+            x["geometry"].buffer(10_000).difference(germany_processed["geometry"][0])
             if x["ADMIN"] in NEIGHBOURS
             else x["geometry"]
         ),
