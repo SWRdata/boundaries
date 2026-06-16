@@ -78,7 +78,7 @@ def main(args: ArgParser):
                 "date": date,
             },
         )
-
+        continue
         tilesets[f"admin_labels_{date.strftime('%Y-%m-%d')}"] = Tileset(
             name=f"Administrative Labels {date}",
             make_fn=make_admin_labels,

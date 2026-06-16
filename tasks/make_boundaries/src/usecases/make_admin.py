@@ -3,8 +3,9 @@ from datetime import date
 
 import geopandas as gp
 import pandas as pd
+import shapely as shp
 
-from globals import BKG_URL, NAME_SUBS
+from globals import BKG_URL, NAME_SUBS, NEIGHBOURS
 from usecases.fetch_unless_cached import fetch_unless_cached
 from usecases.make_versatiles import make_versatiles
 
@@ -23,23 +24,53 @@ def make_admin(cache_dir: str, output_dir: str, date: date) -> list[str]:
     fp = "vg250_01-01.utm32s.shape.ebenen/vg250_ebenen_0101"
 
     zip_name = "vg250_01-01.utm32s.shape.ebenen.zip"
-    cache_path = f"{cache_dir}/{ds}_{zip_name}"
+    bkg_cache_path = f"{cache_dir}/{ds}_{zip_name}"
+    ne_cache_path = f"{cache_dir}/ne_10m_admin_0_countries.zip"
 
-    fetch_unless_cached(f"{BKG_URL}/{date.year}/{zip_name}", cache_path)
+    fetch_unless_cached(f"{BKG_URL}/{date.year}/{zip_name}", bkg_cache_path)
+    fetch_unless_cached(
+        "https://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_0_countries.zip",
+        ne_cache_path,
+    )
 
     # 2. Extract + wrangle shapes
     # 2.1 Admin 2
     print("Staat... ", end="")
-    country = gp.read_file(f"zip://{cache_path}!{fp}/VG250_STA.shp")
-    country["admin_level"] = 2
-    country["kind"] = "Staat"
-    country_processed = country.loc[country["OBJID"] == "DEBKGVG200000CKM"]
-    assert country_processed.shape[0] == 1
-    print(f"done ({country_processed.shape[0]} geom)")
+
+    germany = gp.read_file(f"zip://{bkg_cache_path}!{fp}/VG250_STA.shp")
+    germany["admin_level"] = 2
+    germany["kind"] = "Staat"
+    germany_processed = germany.loc[germany["OBJID"] == "DEBKGVG200000CKM"].to_crs(
+        "EPSG:3857"
+    )
+    assert germany_processed.shape[0] == 1
+
+    ne_countries_raw = gp.read_file(
+        f"zip://{ne_cache_path}!/ne_10m_admin_0_countries.shp"
+    )
+    ne_countries = ne_countries_raw.loc[
+        ne_countries_raw["ADMIN"].isin(NEIGHBOURS)
+    ].to_crs("EPSG:3857")
+
+    ne_countries["GEN"] = ne_countries["ADMIN"]
+    ne_countries["admin_level"] = 2
+    ne_countries["kind"] = "Staat"
+    ne_countries["geometry"] = ne_countries.apply(
+        lambda x: (
+            x["geometry"].buffer(5_000).difference(germany_processed["geometry"][0])
+            if x["ADMIN"] in NEIGHBOURS
+            else x["geometry"]
+        ),
+        axis=1,
+    )
+    countries = pd.concat(
+        [germany_processed.to_crs("EPSG:25832"), ne_countries.to_crs("EPSG:25832")]
+    )
+    print(f"done ({countries.shape[0]} geoms)")
 
     # 2.2  Admin 4
     print("Land... ", end="")
-    laender = gp.read_file(f"zip://{cache_path}!{fp}/VG250_LAN.shp")
+    laender = gp.read_file(f"zip://{bkg_cache_path}!{fp}/VG250_LAN.shp")
     laender["admin_level"] = 4
     laender["kind"] = "Land"
     laender["land"] = laender["SN_L"]
@@ -49,7 +80,7 @@ def make_admin(cache_dir: str, output_dir: str, date: date) -> list[str]:
 
     # 2.3 Admin 6
     print("Kreis... ", end="")
-    kreise = gp.read_file(f"zip://{cache_path}!{fp}/VG250_KRS.shp")
+    kreise = gp.read_file(f"zip://{bkg_cache_path}!{fp}/VG250_KRS.shp")
     kreise["admin_level"] = 6
     kreise["kind"] = "Kreis"
     kreise["land"] = kreise["SN_L"]
@@ -58,7 +89,7 @@ def make_admin(cache_dir: str, output_dir: str, date: date) -> list[str]:
 
     # 2.4 Admin 8
     print("Gemeinde... ", end="")
-    gemeinden = gp.read_file(f"zip://{cache_path}!{fp}/VG250_GEM.shp")
+    gemeinden = gp.read_file(f"zip://{bkg_cache_path}!{fp}/VG250_GEM.shp")
     gemeinden["admin_level"] = 8
     gemeinden["kind"] = "Gemeinde"
     gemeinden["land"] = gemeinden["SN_L"]
@@ -68,7 +99,7 @@ def make_admin(cache_dir: str, output_dir: str, date: date) -> list[str]:
     res = gp.GeoDataFrame(
         pd.concat(
             [
-                country_processed,
+                countries,
                 laender_processed,
                 kreise_processed,
                 gemeinden_processed,

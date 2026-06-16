@@ -1,7 +1,16 @@
 <script>
   import { dev } from "$app/environment";
 
-  import { Map, SWRDataLabLight, VectorTileSource, VectorLayer, NavigationControl, Tooltip, tokens, AttributionControl } from "@swr-data-lab/components";
+  import {
+    Map,
+    SWRDataLabLight,
+    VectorTileSource,
+    VectorLayer,
+    NavigationControl,
+    Tooltip,
+    tokens,
+    AttributionControl,
+  } from "@swr-data-lab/components";
 
   import Sidebar from "./Sidebar.svelte";
 
@@ -9,20 +18,29 @@
   const levels = [2, 4, 6, 8];
   const labels = ["Default", "None"];
 
-  let filter = $state(levels[1]);
+  let filter = $state(levels[0]);
   let showLabels = $state(labels[0]);
   let currentDate = $state(0);
   let date = $derived(timestamps[currentDate] ?? null);
 
   let tileUrls = $derived(
-    false
+    dev
       ? [
-          ["boundaries", `http://localhost:8080/tiles/admin_boundaries/tiles.json`],
+          [
+            "boundaries",
+            `http://localhost:8080/tiles/admin_boundaries/tiles.json`,
+          ],
           ["labels", `http://localhost:8080/tiles/admin_labels/tiles.json`],
         ]
       : [
-          ["boundaries", `https://static.datenhub.net/data/boundaries/admin_boundaries_${date}.versatiles?{z}/{x}/{y}`],
-          ["labels", `https://static.datenhub.net/data/boundaries/admin_labels_${date}.versatiles?{z}/{x}/{y}`],
+          [
+            "boundaries",
+            `https://static.datenhub.net/data/boundaries/admin_boundaries_${date}.versatiles?{z}/{x}/{y}`,
+          ],
+          [
+            "labels",
+            `https://static.datenhub.net/data/boundaries/admin_labels_${date}.versatiles?{z}/{x}/{y}`,
+          ],
         ],
   );
 
@@ -32,7 +50,9 @@
 
   let fills = [];
   for (let i = 0; i <= 16; i++) {
-    const key = Object.keys(tokens.shades)[i % Object.keys(tokens.shades).length];
+    const key = Object.keys(tokens.shades)[
+      i % Object.keys(tokens.shades).length
+    ];
     fills.push(tokens.shades[key].base);
   }
 
@@ -46,7 +66,14 @@
 </script>
 
 <main class="container">
-  <Sidebar {labels} {levels} {timestamps} bind:date bind:filter bind:showLabels />
+  <Sidebar
+    {labels}
+    {levels}
+    {timestamps}
+    bind:date
+    bind:filter
+    bind:showLabels
+  />
   <Map
     initialBounds={[5.86625, 47.270124, 15.041816, 55.058778]}
     initialLocation={{ zoom: 5.9 }}
@@ -63,7 +90,12 @@
         {#if url.includes("tiles.json")}
           <VectorTileSource {id} {url} />
         {:else}
-          <VectorTileSource {id} tiles={[url]} maxZoom={8} attribution={`© BKG ${date.replace("-01-01", "")} dl-de/by-2-0`} />
+          <VectorTileSource
+            {id}
+            tiles={[url]}
+            maxZoom={8}
+            attribution={`© BKG ${date.replace("-01-01", "")} dl-de/by-2-0`}
+          />
         {/if}
       {/each}
 
@@ -125,7 +157,12 @@
         type="line"
         filter={["==", "admin_level", filter]}
         paint={{
-          "line-width": ["case", ["any", ["boolean", ["feature-state", "hovered"], false]], 1.75, 0],
+          "line-width": [
+            "case",
+            ["any", ["boolean", ["feature-state", "hovered"], false]],
+            1.75,
+            0,
+          ],
           "line-color": "black",
           "line-opacity": 1,
         }}
@@ -155,7 +192,12 @@
     {/if}
 
     {#if hovered}
-      <Tooltip position={tooltipCoordinates} mouseEvents={false} showCloseButton={false} closeOnClick={false}>
+      <Tooltip
+        position={tooltipCoordinates}
+        mouseEvents={false}
+        showCloseButton={false}
+        closeOnClick={false}
+      >
         <table class="tooltip-body">
           <tbody>
             {#each Object.entries(hovered.properties) as [k, v]}
