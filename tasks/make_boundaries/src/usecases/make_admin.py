@@ -3,7 +3,6 @@ from datetime import date
 
 import geopandas as gp
 import pandas as pd
-import shapely as shp
 
 from globals import BKG_URL, NAME_SUBS, NEIGHBOURS
 from usecases.fetch_unless_cached import fetch_unless_cached
