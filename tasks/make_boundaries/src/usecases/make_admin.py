@@ -14,7 +14,7 @@ from usecases.make_versatiles import make_versatiles
 # See: https://wiki.openstreetmap.org/wiki/File:Administrative_Gliederung_Deutschlands_admin_level.png
 def make_admin(cache_dir: str, output_dir: str, date: date) -> list[str]:
 
-    # 1. Fetch the BKG data we need
+    # 1. Fetch the BKG/Natural Earth data we need
     ds = date.strftime("%Y-%m-%d")
     json_path = os.path.join(cache_dir, f"admin_boundaries_{ds}.geojson")
     versatiles_path = os.path.join(output_dir, f"admin_boundaries_{ds}.versatiles")
@@ -22,11 +22,11 @@ def make_admin(cache_dir: str, output_dir: str, date: date) -> list[str]:
 
     fp = "vg250_01-01.utm32s.shape.ebenen/vg250_ebenen_0101"
 
-    zip_name = "vg250_01-01.utm32s.shape.ebenen.zip"
-    bkg_cache_path = f"{cache_dir}/{ds}_{zip_name}"
+    bkg_zip_name = "vg250_01-01.utm32s.shape.ebenen.zip"
+    bkg_cache_path = f"{cache_dir}/{ds}_{bkg_zip_name}"
     ne_cache_path = f"{cache_dir}/ne_10m_admin_0_countries.zip"
 
-    fetch_unless_cached(f"{BKG_URL}/{date.year}/{zip_name}", bkg_cache_path)
+    fetch_unless_cached(f"{BKG_URL}/{date.year}/{bkg_zip_name}", bkg_cache_path)
     fetch_unless_cached(
         "https://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_0_countries.zip",
         ne_cache_path,
