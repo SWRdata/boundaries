@@ -5,9 +5,8 @@ from bs4 import BeautifulSoup
 
 from globals import BKG_URL
 
+
 # Fetches a list of available years from the BKG website
-
-
 def fetch_bkg_years() -> list[int]:
 
     # verify=False if the government issued itself a broken SSL cert again
