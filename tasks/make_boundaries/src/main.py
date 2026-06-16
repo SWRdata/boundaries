@@ -15,7 +15,7 @@ from usecases.upload_blob import upload_blob
 
 
 class ArgParser(Tap):
-    mode: Literal["prod", "dev"]
+    mode: Literal["production", "dev"] = "dev"
     """dev mode disables reading/writing to GCS and some data fetches"""
     min_year: int = 2024
     gcs_project: str = "swr-data-1"
@@ -33,22 +33,29 @@ def main(args: ArgParser):
     os.makedirs(os.path.dirname(args.processed_dir), exist_ok=True)
     manifest_path = os.path.join(args.processed_dir, "manifest.csv")
 
-    if args.mode == "prod":
+    print(f"running in {args.mode} mode")
+
+    if args.mode == "production":
+        print(f"{args.get_reproducibility_info()}")
+
+    if args.mode == "production":
         storage_client = storage.Client(project=args.gcs_project)
 
-    if args.mode == "prod":
+    # Fetch available years on the BKG wesite
+    if args.mode == "production":
         print("fetching available bkg files... ", end="")
         available_years = fetch_bkg_years()
     else:
-        print("skipping fetching bkg files in dev mode", end="")
+        print("skipping fetching bkg files in dev mode... ", end="")
         available_years = [2025]
     print(f"found {len(available_years)}\n")
 
-    if args.mode == "prod":
-        print("fetching existing files", end="")
+    # Fetch existing tilesets
+    if args.mode == "production":
+        print("fetching existing files... ", end="")
         existing_files = fetch_existing(storage_client, args.gcs_bucket, args.gcs_path)
     else:
-        print("skipping fetching existing files in dev mode", end="")
+        print("skipping fetching existing files in dev mode... ", end="")
         existing_files = []
 
     if len(existing_files) > 0:
@@ -106,7 +113,7 @@ def main(args: ArgParser):
         f.write(f"name\n{'\n'.join([*existing_files, *new_files])}")
         print(f"Wrote manifest to {manifest_path}")
 
-    if args.mode == "prod":
+    if args.mode == "production":
         for f in [*new_files, manifest_path]:
             upload_blob(
                 storage_client,
@@ -114,10 +121,10 @@ def main(args: ArgParser):
                 args.gcs_bucket,
                 os.path.join(args.gcs_path, os.path.basename(f)),
             )
-        print(f"Uploaded {len(new_files)} new files, {len(failed_files)} failed")
+        print(f"Uploaded {len(new_files)} new files ({len(failed_files)} failed)")
     else:
         print(
-            f"skipping updloading {len(new_files)} new files, {len(failed_files)} failed in dev mode"
+            f"skipping updloading {len(new_files)} new files in dev mode ({len(failed_files)} failed)"
         )
 
 
