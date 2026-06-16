@@ -47,9 +47,9 @@ def make_admin(cache_dir: str, output_dir: str, date: date) -> list[str]:
     ne_countries_raw = gp.read_file(
         f"zip://{ne_cache_path}!/ne_10m_admin_0_countries.shp"
     )
-    ne_countries = ne_countries_raw.loc[
-        ne_countries_raw["ADMIN"].isin(NEIGHBOURS)
-    ].to_crs("EPSG:3857")
+    ne_countries = ne_countries_raw.loc[ne_countries_raw["ADMIN"] != "Germany"].to_crs(
+        "EPSG:3857"
+    )
 
     ne_countries["GEN"] = ne_countries["ADMIN"]
     ne_countries["admin_level"] = 2
