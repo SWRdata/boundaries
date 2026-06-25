@@ -41,4 +41,4 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --frozen --no-dev --no-editable
 
-CMD [".venv/bin/python", "src/main.py"]
+CMD [".venv/bin/python", "src/main.py", "--mode=production", "--min_year=2024"]

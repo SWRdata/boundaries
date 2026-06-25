@@ -1,6 +1,6 @@
 # SWRData/Boundaries
 
-Ready-to-use, timestamped, tiled boundary data for Germany.
+Ready-to-use, timestamped boundary data for Germany.
 
 [![deploy demo](https://github.com/SWRdata/boundaries/actions/workflows/deploy-demo.yaml/badge.svg)](https://github.com/SWRdata/boundaries/actions/workflows/deploy-demo.yaml) [![deploy pipeline](https://github.com/SWRdata/boundaries/actions/workflows/deploy-pipeline.yaml/badge.svg)](https://github.com/SWRdata/boundaries/actions/workflows/deploy-pipeline.yaml) [![ty](https://github.com/SWRdata/boundaries/actions/workflows/ty.yaml/badge.svg)](https://github.com/SWRdata/boundaries/actions/workflows/ty.yaml)
 
@@ -14,15 +14,17 @@ See [demo](https://static.datenhub.net/apps/boundaries/main/index.html) for code
 
 ### Tilesets
 
-| Name               | Description                                         | Source                                                                                                                                                | License                                                                                           |
-| ------------------ | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `admin_boundaries` | Staat, Länder, Kreise, Gemeinden 1:250,000          | [BKG VG250](https://gdz.bkg.bund.de/index.php/default/digitale-geodaten/verwaltungsgebiete/verwaltungsgebiete-1-250-000-stand-01-01-vg250-01-01.html) | [DNN 2.0](https://sgx.geodatenzentrum.de/web_public/gdz/lizenz/deu/nutzungsbedingungen_vg250.pdf) |
-| `admin_labels`     | Label points for all features in `admin_boundaries` | [BKG VG250](https://gdz.bkg.bund.de/index.php/default/digitale-geodaten/verwaltungsgebiete/verwaltungsgebiete-1-250-000-stand-01-01-vg250-01-01.html) | [DNN 2.0](https://sgx.geodatenzentrum.de/web_public/gdz/lizenz/deu/nutzungsbedingungen_vg250.pdf) |
+| Name               | Description                                         | Sources                                                                                                                                                                                                                                                       | License                                                                                                                                                                  |
+| ------------------ | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `admin_boundaries` | Staat, Länder, Kreise, Gemeinden 1:250,000          | [BKG VG250](https://gdz.bkg.bund.de/index.php/default/digitale-geodaten/verwaltungsgebiete/verwaltungsgebiete-1-250-000-stand-01-01-vg250-01-01.html), [Natural Earth 10m Cultural Vectors](https://www.naturalearthdata.com/downloads/10m-cultural-vectors/) | [DNN 2.0](https://sgx.geodatenzentrum.de/web_public/gdz/lizenz/deu/nutzungsbedingungen_vg250.pdf), [Public Domain](https://www.naturalearthdata.com/about/terms-of-use/) |
+| `admin_labels`     | Label points for all features in `admin_boundaries` | [BKG VG250](https://gdz.bkg.bund.de/index.php/default/digitale-geodaten/verwaltungsgebiete/verwaltungsgebiete-1-250-000-stand-01-01-vg250-01-01.html)                                                                                                         | [DNN 2.0](https://sgx.geodatenzentrum.de/web_public/gdz/lizenz/deu/nutzungsbedingungen_vg250.pdf)                                                                        |
 
 ### Timestamps
 
 <!-- BEGIN TIMESTAMPS -->
+
 `2024-01-01`, `2025-01-01`
+
 <!-- END TIMESTAMPS -->
 
 ### Fields

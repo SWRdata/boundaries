@@ -9,9 +9,9 @@
     "sync": "svelte-kit sync"
   },
   "devDependencies": {
-    "@sveltejs/kit": "^2.61.1",
     "@sveltejs/adapter-auto": "^7.0.1",
     "@sveltejs/adapter-static": "^3.0.10",
+    "@sveltejs/kit": "^2.61.1",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "dotenv": "^17.4.2",
     "prettier": "^3.8.3",

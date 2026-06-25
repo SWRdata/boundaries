@@ -5,3 +5,15 @@ NAME_SUBS = {
     "Dillingen a.d.Donau": "Dillingen an der Donau",
     "Mühldorf a.Inn": "Mühldorf am Inn",
 }
+
+NEIGHBOURS = (
+    "Austria",
+    "Belgium",
+    "Czechia",
+    "Denmark",
+    "France",
+    "Luxembourg",
+    "Netherlands",
+    "Poland",
+    "Switzerland",
+)
