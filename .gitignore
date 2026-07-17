@@ -2,6 +2,7 @@ __pycache__/
 .venv/
 tmp/
 .env
+.ruff_cache
 node_modules
 frontend-dev.tar.gz
 

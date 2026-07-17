@@ -1,5 +1,5 @@
 [project]
-name = "fetch-geometry"
+name = "make_boundaries"
 version = "0.1.0"
 description = ""
 readme = "README.md"
@@ -13,4 +13,9 @@ dependencies = [
     "pandas>=3.0.3",
     "requests>=2.34.2",
     "shapely>=2.1.2",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.22",
 ]
