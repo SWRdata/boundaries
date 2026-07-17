@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 import argparse
-import os
 import glob
-
-from shutil import copytree, ignore_patterns
+import os
 import tempfile
+from shutil import copytree, ignore_patterns
 
 from google.cloud import storage
 

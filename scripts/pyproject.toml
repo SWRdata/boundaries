@@ -12,3 +12,6 @@ dependencies = [
 dev = [
     "ruff>=0.15.22",
 ]
+
+[tool.ruff.lint]
+select = ["I"]
