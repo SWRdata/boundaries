@@ -17,14 +17,11 @@ from kubernetes.client import models as k8s
 
 dag_name = "boundaries"
 
-# Import parameters and configurations
-config_path = f"/home/airflow/gcs/dags/{dag_name}/configuration.yaml"
-configuration = load_config(config_path)
-
-dag_tasks = configuration.get("dag_task_parameters", []) or []
-trigger_tasks = configuration.get("trigger_task_parameters", []) or []
-dag_metadata = configuration["dag_metadata"]
-dataplex_metadata = configuration["dataplex_metadata"]
+config = load_config(f"/home/airflow/gcs/dags/{dag_name}/configuration.yaml")
+dag_tasks = config.get("dag_task_parameters", []) or []
+trigger_tasks = config.get("trigger_task_parameters", []) or []
+dag_metadata = config["dag_metadata"]
+dataplex_metadata = config["dataplex_metadata"]
 github_url = f"https://github.com/SWRdata/{dag_name}"
 
 dag_metadata["default_args"]["retry_delay"] = timedelta(
@@ -41,9 +38,9 @@ with DAG(
     is_paused_upon_creation=dag_metadata["is_paused_upon_creation"],
     start_date=dag_metadata["start_date"],
 ) as dag:
-    # dummy operators for flexibility
     pipeline_start = DummyOperator(task_id="pipeline_start")
     pipeline_end = DummyOperator(task_id="pipeline_end", trigger_rule="all_done")
+
     failure_report_task = PythonOperator(
         task_id="failure_report",
         python_callable=failure_reporter,
@@ -51,12 +48,12 @@ with DAG(
         op_kwargs={"disable_reporting": True},
         provide_context=True,
     )
-    task_list = []
-    for task in dag_tasks:
-        current_task = KubernetesPodOperator(
+
+    task_list = [
+        KubernetesPodOperator(
             namespace="composer-user-workloads",
             task_id=task.get("task_id"),
-            image=f"{configuration['image_repo']}/{dag_name}_tasks_{task['image_suffix']}:latest",
+            image=f"{config['image_repo']}/{dag_name}_tasks_{task['image_suffix']}:latest",
             container_resources=k8s.V1ResourceRequirements(
                 requests=task.get("container_resource").get("requests"),
                 limits=task.get("container_resource").get("limits"),
@@ -69,10 +66,11 @@ with DAG(
                 for key, value in task.get("environment_variables", {}).items()
             ],
         )
-        task_list.append(current_task)
+        for task in dag_tasks
+    ]
 
-    # tasks are run sequentially depending on the order they are defined in configuration.yaml
     chain(*task_list)
+
     if dataplex_metadata.get("dataset_id"):
         find_failures = PythonOperator(
             task_id="find_failures",
@@ -84,7 +82,7 @@ with DAG(
             python_callable=update_dataplex,
             op_kwargs={
                 "airflow_status": "{{ ti.xcom_pull(task_ids='check_failures', key='overall_status') }}",
-                "configuration": configuration,
+                "configuration": config,
                 "github_url": github_url,
             },
         )
@@ -92,7 +90,7 @@ with DAG(
         bq_updater = PythonOperator(
             task_id="update_bq",
             python_callable=update_bq_entry,
-            op_kwargs={"configuration": configuration},
+            op_kwargs={"configuration": config},
         )
 
         failure_report_task >> find_failures >> dataplex_updater >> bq_updater

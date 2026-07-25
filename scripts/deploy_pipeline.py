@@ -1,87 +1,115 @@
-# Source: https://docs.cloud.google.com/composer/docs/composer-3/dag-cicd-github#presubmit-check-job
+"""
+Deploy an Airflow pipeline to SWR Data Lab infrastructure
+"""
 
-from __future__ import annotations
+# 1. Find all Dockerfiles in the repo
+# 2. Build and push each one to Google's artifact registry (docker.pkg.dev), here: https://console.cloud.google.com/artifacts/docker/swr-datalab-prod/europe-west3/etl-images-airflow-swr-data-lab?project=swr-datalab-prod
+# 3. SSH into the Airflow box and pull the new images
+# 4. Deploy the ./dag folder to GCS (airflow notices and pulls that itself)
 
-import argparse
+# See: https://docs.cloud.google.com/composer/docs/composer-3/dag-cicd-github#presubmit-check-job
+
 import glob
 import os
-import tempfile
-from shutil import copytree, ignore_patterns
+import re
+import secrets
+import subprocess
+from sys import stdout
 
-from google.cloud import storage
-
-
-def _create_dags_list(dags_directory: str) -> tuple[str, list[str]]:
-
-    temp_dir = tempfile.mkdtemp()
-
-    # ignore non-DAG Python files
-    files_to_ignore = ignore_patterns("__init__.py", "*_test.py")
-
-    # Copy everything but the ignored files to a temp directory
-    copytree(dags_directory, f"{temp_dir}/", ignore=files_to_ignore, dirs_exist_ok=True)
-
-    # The only Python files left in our temp directory are DAG files
-    # so we can exclude all non Python files
-    dags = glob.glob(f"{temp_dir}/*.py")
-    return (temp_dir, dags)
+from tap import Tap
 
 
-def upload_dags_to_composer(
-    dags_directory: str, bucket_name: str, name_replacement: str = "dags/"
-) -> None:
-    """
-    Given a directory, this function moves all DAG files from that directory
-    to a temporary directory, then uploads all contents of the temporary directory
-    to a given cloud storage bucket
-    Args:
-        dags_directory (str): a fully qualified path to a directory that contains a "dags/" subdirectory
-        bucket_name (str): the GCS bucket of the Cloud Composer environment to upload DAGs to
-        name_replacement (str, optional): the name of the "dags/" subdirectory that will be used when constructing the temporary directory path name Defaults to "dags/".
-    """
-    temp_dir, dags = _create_dags_list(dags_directory)
+class ArgumentParser(Tap):
+    base_dir: str = "tasks"  # base dir
+    registry_base: str  # artifact registry base url
+    bucket_name: str = ""  # name of your composer environment's DAGs bucket
 
-    if len(dags) > 0:
-        # Note - the GCS client library does not currently support batch requests on uploads
-        # if you have a large number of files, consider using
-        # the Python subprocess module to run gcloud storage cp --recursive on your dags
-        # See https://cloud.google.com/storage/docs/gsutil/commands/cp for more info
-        storage_client = storage.Client()
-        bucket = storage_client.bucket(bucket_name)
 
-        for dag in dags:
-            # Remove path to temp dir
-            dag = dag.replace(f"{temp_dir}/", name_replacement)
+def cleanup_registry():
+    pass
 
-            try:
-                # Upload to your bucket
-                blob = bucket.blob(dag)
-                blob.upload_from_filename(dag)
-                print(f"File {dag} uploaded to {bucket_name}/{dag}.")
-            except FileNotFoundError:
-                current_directory = os.listdir()
-                print(
-                    f"{name_replacement} directory not found in {current_directory}, you may need to override the default value of name_replacement to point to a relative directory"
-                )
-                raise
 
-    else:
-        print("No DAGs to upload.")
+def cleanup_storage():
+    pass
+
+
+def upload_dag_folder():
+    pass
+
+
+def read_file(path: str) -> str:
+    with open(path, "r") as file:
+        return file.read()
+
+
+def main(args: ArgumentParser):
+
+    local_tags: list[str] = []
+
+    dockerfiles = glob.glob(f"{args.base_dir}/**/Dockerfile")
+    if not dockerfiles:
+        print("No Dockerfiles found, exiting")
+        return
+
+    dag_name = read_file("./.github/REPO_NAME").strip().replace("-", "_")
+    if not dag_name:
+        print("Failed to get DAG name, exiting")
+        return
+
+    gcp_token = os.environ.get("GCP_ACCESS_TOKEN")
+    if not gcp_token:
+        print("Failed to get GCP access token key, exiting")
+        return
+
+    for i, path in enumerate([d.strip("Dockerfile") for d in dockerfiles]):
+        print(f"building {path}/Dockerfile ({i + 1}/{len(dockerfiles)})")
+
+        image_name = (
+            path.replace("/", "_").replace("\\", "_").replace(".", "").strip("_")
+        )
+
+        image_tag = f"{args.registry_base}/{dag_name}_fix21_{image_name}:latest"
+
+        subprocess.run(
+            [
+                "docker",
+                "login",
+                "--username",
+                "oauth2accesstoken",
+                "--password",
+                gcp_token,
+            ],
+            stdout=subprocess.DEVNULL,  # supress logs to not leak secrets
+        ).check_returncode()
+
+        subprocess.run(
+            [
+                "docker",
+                "build",
+                path,
+                "--tag",
+                image_tag,
+                "--secret",
+                "id=google_creds,env=GAR_READER_SA_KEY",
+                "--push",
+            ]
+        ).check_returncode()
+        local_tags.append(image_tag)
+
+    # It seems to me like we don't really need to SSH into any box,
+    # the KubernetesPodOperator will just pull the image itself
+    # https://docs.cloud.google.com/composer/docs/composer-3/use-kubernetes-pod-operator#minimal-config
+
+    # upload the dag folder to GCS
+    upload_dag_folder()
+
+    # if the repo name changed:
+    cleanup_registry()
+    cleanup_storage()
+
+    # if task meta changed:
+    cleanup_registry()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
-    parser.add_argument(
-        "--dags_directory",
-        help="Relative path to the source directory containing your DAGs",
-    )
-    parser.add_argument(
-        "--dags_bucket",
-        help="Name of the DAGs bucket of your Composer environment without the gs:// prefix",
-    )
-
-    args = parser.parse_args()
-
-    upload_dags_to_composer(args.dags_directory, args.dags_bucket)
+    main(ArgumentParser(description=__doc__).parse_args())

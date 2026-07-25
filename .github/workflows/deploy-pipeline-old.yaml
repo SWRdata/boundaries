@@ -1,0 +1,209 @@
+name: deploy pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "**/dag/**"
+      - "**/tasks/**"
+
+permissions:
+  contents: write
+  id-token: write
+
+env:
+  REGISTRY_NAME: etl-images-airflow-swr-data-lab
+  REGISTRY_REGION: europe-west3
+  PROJECT_ID: swr-datalab-prod
+  BUCKET_NAME: europe-west3-swr-datalab-ai-4eee14a8-bucket
+  GCE_INSTANCE_NAME: datapipelines
+  GCE_ZONE: europe-west3-a
+
+jobs:
+  deploy-data-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Authenticate to Google Cloud
+        id: gcp-auth
+        uses: SWRdata/workflows-swr-data-lab/.github/actions/gcp/auth@main
+
+      - name: Get Repo Name
+        id: get-repo-name
+        uses: SWRdata/workflows-swr-data-lab/.github/actions/git/get-repo-name@main
+
+      - name: Ensure the repo name exists
+        uses: SWRdata/workflows-swr-data-lab/.github/actions/git/ensure-repo-name-file@main
+        id: ensure-repo-name-exists
+        with:
+          repo_name: ${{ steps.get-repo-name.outputs.name }}
+
+      - name: Login to GAR
+        uses: SWRdata/workflows-swr-data-lab/.github/actions/gcp/gar-login@main
+        with:
+          access_token: ${{ steps.gcp-auth.outputs.access_token }}
+
+      - name: Clean up CC Bucket and Artifact Registry if repo name changed
+        if: ${{ inputs.enable_cleanup == 'true' && steps.ensure-repo-name-exists.outputs.is_new == 'false' }}
+        run: |
+          REPO_NAME_FILE=".github/REPO_NAME"
+          CURRENT_REPO_NAME="${{ steps.get-repo-name.outputs.name }}"
+
+          if [ "$CURRENT_REPO_NAME" != "$(cat $REPO_NAME_FILE 2>/dev/null)" ]; then
+            echo "[INFO] Repo name has changed! Preparing to clean up CC Bucket and Artifact Registry."
+
+            if [ ! -s "$REPO_NAME_FILE" ]; then
+              echo "[ERROR] .github/REPO_NAME is missing or empty. Aborting cleanup."
+              exit 1
+            fi
+
+            PREV_DAG_NAME=$(cat "$REPO_NAME_FILE" | tr '-' '_')
+
+            if [ -z "$PREV_DAG_NAME" ]; then
+              echo "[ERROR] Resolved GCS folder name is empty. Aborting cleanup."
+              exit 1
+            fi
+
+            GCS_PATH="gs://${{ env.BUCKET_NAME }}/dags/$PREV_DAG_NAME"
+
+            echo "[INFO] Attempting to delete: $GCS_PATH"
+            gcloud storage rm -r "$GCS_PATH" || true
+
+            echo "[INFO] Cleaning up Artifact Registry images starting with: ${PREV_DAG_NAME}_${{ inputs.tasks_path }}*"
+
+            IMAGE_LIST=$(gcloud artifacts docker images list \
+              "${{ env.REGISTRY_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REGISTRY_NAME }}" \
+              --filter="package~${PREV_DAG_NAME}_${{ inputs.tasks_path }}*" \
+              --format="value(package)")
+
+            if [[ -z "$IMAGE_LIST" ]]; then
+                echo "[INFO] No images to delete in Artifact Registry."
+            else
+                for IMAGE in $IMAGE_LIST; do
+                  gcloud artifacts docker images delete "$IMAGE" \
+                    --quiet \
+                    --delete-tags
+                  echo "[INFO] Deleted image: $IMAGE (and all tags)."
+                done
+            fi
+
+            git pull --rebase
+            git config user.name "github-actions"
+            git config user.email "actions@github.com"
+            echo $CURRENT_REPO_NAME > .github/REPO_NAME
+            git add .github/REPO_NAME
+            if git diff --cached --quiet; then
+              echo "[INFO] No changes in REPO_NAME file. Nothing to commit."
+            else
+              git commit -m "chore: update REPO_NAME"
+              git push
+              echo "[INFO] Committed changes in REPO_NAME:"
+            fi
+          else
+            echo "[INFO] Repo name unchanged. Skipping clean up CC Bucket and Artifact Registry."
+          fi
+
+      - name: Build shared-code Docker Image
+        run: |
+          if [[ -f "${{ inputs.tasks_path }}/shared-code/Dockerfile" ]]; then
+            docker build --tag shared-code:latest ./${{ inputs.tasks_path }}/shared-code
+          fi
+
+      - name: Set DAG name
+        id: set-dag-name
+        run: |
+          REPO_NAME=${{ steps.get-repo-name.outputs.name }}
+          CLEAN_NAME=$(echo "$REPO_NAME" | tr '-' '_')
+          echo "name=$CLEAN_NAME" >> $GITHUB_OUTPUT
+
+      - name: Collect Dockerfiles
+        id: collect-dockerfiles
+        run: |
+          DOCKERFILES=$(find . -name Dockerfile | grep -v "tasks/shared-code" || true)
+          echo "dockerfiles=$(echo $DOCKERFILES | tr '\n' ' ')" >> $GITHUB_OUTPUT
+
+      - name: Cleanup Artifact Registry if changes in task meta
+        run: |
+          REMOTE_IMAGES=$(gcloud artifacts docker images list \
+            "${REGISTRY_REGION}-docker.pkg.dev/${PROJECT_ID}/${REGISTRY_NAME}" \
+            --filter="package~${{ steps.set-dag-name.outputs.name }}_${{ inputs.tasks_path }}*" \
+            --format="value(package)")
+
+          declare -A LOCAL_IMAGES_SET=()
+
+          for DOCKERFILE in ${{ steps.collect-dockerfiles.outputs.dockerfiles }}; do
+              IMAGE_NAME=$(echo "$DOCKERFILE" | sed 's/\/Dockerfile//; s/\//_/g; s/\.//g')
+              LOCAL_IMAGE="${REGISTRY_REGION}-docker.pkg.dev/${PROJECT_ID}/${REGISTRY_NAME}/${{ steps.set-dag-name.outputs.name }}${IMAGE_NAME}"
+              LOCAL_IMAGES_SET["$LOCAL_IMAGE"]=1
+          done
+
+          for REMOTE_IMAGE in $REMOTE_IMAGES; do
+              if [[ -z "${LOCAL_IMAGES_SET[$REMOTE_IMAGE]}" ]]; then
+                  gcloud artifacts docker images delete "$REMOTE_IMAGE" --quiet
+                  echo "[INFO] Deleted remote image: $REMOTE_IMAGE"
+              fi
+          done
+
+      - name: Build and push Docker Images
+        env:
+          GAR_READER_SA_KEY: ${{ secrets.GAR_READER_SA_KEY }}
+          DOCKERFILES: ${{ steps.collect-dockerfiles.outputs.dockerfiles }}
+        run: |
+
+          if [[ -z "${{ steps.collect-dockerfiles.outputs.dockerfiles }}" ]]; then
+            echo "[INFO] No Dockerfiles found."
+            exit 0
+          fi
+
+          for DOCKERFILE in ${{ steps.collect-dockerfiles.outputs.dockerfiles }}; do
+            BUILD_CONTEXT_INPUT="${{ inputs.build_context }}"
+            if [[ -n "$BUILD_CONTEXT_INPUT" ]]; then
+              BUILD_CONTEXT_DIR="$BUILD_CONTEXT_INPUT"
+            else
+              BUILD_CONTEXT_DIR=$(dirname "$DOCKERFILE")
+            fi
+
+            IMAGE_NAME=$(echo "$DOCKERFILE" | sed 's/\/Dockerfile//; s/\//_/g; s/\.//g')
+
+            docker build \
+              --file "$DOCKERFILE" \
+              --secret id=google_creds,env=GAR_READER_SA_KEY \
+              --push \
+              --tag "${{ env.REGISTRY_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REGISTRY_NAME }}/${{ steps.set-dag-name.outputs.name }}${IMAGE_NAME}:${{ inputs.image_tag }}" \
+              "$BUILD_CONTEXT_DIR"
+            echo "[INFO] Built image: $IMAGE_NAME"
+          done
+
+      - name: Pull Docker Image into GCE and cleanup
+        if: fromJSON(inputs.deploy_to_gce)
+        uses: google-github-actions/ssh-compute@v2
+        with:
+          instance_name: ${{ env.GCE_INSTANCE_NAME }}
+          zone: ${{ env.GCE_ZONE }}
+          project_id: ${{ env.PROJECT_ID }}
+          ssh_private_key: ${{ secrets.GCE_DATAPIPELINES_SSH_KEY }}
+          command: |
+            TOKEN=$(curl -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token" | jq -r .access_token)
+            docker login -u oauth2accesstoken --password "$TOKEN" https://${{ env.REGISTRY_REGION }}-docker.pkg.dev
+            if [[ -z "${{ steps.collect-dockerfiles.outputs.dockerfiles }}" ]]; then
+              echo "No Dockerfiles found."
+            else
+              IFS=' '
+              for DOCKERFILE in ${{ steps.collect-dockerfiles.outputs.dockerfiles }}; do
+                IMAGE_NAME=$(echo $DOCKERFILE | sed 's/\/Dockerfile//; s/\//_/g; s/\.//g')
+                docker pull ${{ env.REGISTRY_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REGISTRY_NAME }}/${{ steps.set-dag-name.outputs.name }}$IMAGE_NAME:${{ inputs.image_tag }}
+              done
+            fi
+            docker container prune -f
+            docker image prune -f
+
+      - name: Upload DAG folder
+        uses: SWRdata/workflows-swr-data-lab/.github/actions/gcp/gcs-upload@main
+        with:
+          bucket: ${{ env.BUCKET_NAME }}
+          src_folder: ${{ inputs.dag_path }}
+          dst_folder: dags/${{ steps.set-dag-name.outputs.name }}

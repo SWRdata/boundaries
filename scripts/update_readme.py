@@ -1,3 +1,8 @@
+"""
+TODO: Extend the Airflow task to trigger a GH Action (via webhook) which calls this script
+It's a little convoluted but lets us easily open a PR against the repo etc
+"""
+
 import csv
 import re
 from io import StringIO
@@ -24,19 +29,14 @@ def run():
 
     print(f"Found {len(timestamps)} timestamps:\n{'\n'.join(timestamps)}")
 
-    old_readme: str = ""
-    new_readme: str = ""
-
-    with open("../README.md", "r") as f:
+    with open("../README.md", "rw") as f:
         old_readme = f.read()
         new_readme = re.sub(
             r"(<!-- BEGIN TIMESTAMPS.+\n)(.+)(\n<!-- END TIMESTAMPS.+)",
             f"\\1{', '.join([f'`{ts}`' for ts in timestamps])}\\3",
             old_readme,
         )
-
-    if new_readme != old_readme:
-        with open("../README.md", "w") as f:
+        if new_readme != old_readme:
             f.write(new_readme)
             print("Readme updated")
 

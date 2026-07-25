@@ -6,7 +6,6 @@ def upload_blob(
 ):
 
     bucket = client.bucket(bucket_name)
-
     blob = bucket.blob(destination_path)
     blob.upload_from_filename(source_path)
 

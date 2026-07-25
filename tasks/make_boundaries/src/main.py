@@ -2,6 +2,7 @@ import datetime
 import os
 from typing import Dict
 
+from common.upload_blob import upload_blob
 from dotenv import load_dotenv
 from google.cloud import storage
 
@@ -10,7 +11,6 @@ from usecases.fetch_bkg_years import fetch_bkg_years
 from usecases.fetch_existing import fetch_existing
 from usecases.make_admin import make_admin
 from usecases.make_admin_labels import make_admin_labels
-from usecases.upload_blob import upload_blob
 
 gcs_project = "swr-data-1"
 gcs_bucket = "datenhub-net-static"
