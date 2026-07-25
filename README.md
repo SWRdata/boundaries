@@ -22,7 +22,7 @@ See [demo](https://static.datenhub.net/apps/boundaries/main/index.html) for code
 ### Timestamps
 
 <!-- BEGIN TIMESTAMPS -->
-`2024-01-01`, `2025-01-01`
+`2025-01-01`, `2024-01-01`
 <!-- END TIMESTAMPS -->
 
 ### Fields

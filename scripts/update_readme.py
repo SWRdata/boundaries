@@ -1,4 +1,6 @@
 """
+Update the top-level readme using a manifest file stored in GCS
+
 TODO: Extend the Airflow task to trigger a GH Action (via webhook) which calls this script
 It's a little convoluted but lets us easily open a PR against the repo etc
 """
@@ -43,11 +45,11 @@ def main(args: ArgumentParser):
         )
 
         if new_readme != old_readme:
-            with open("../README.md", "w") as f:
+            with open(args.readme_path, "w") as f:
                 f.write(new_readme)
                 print("Readme updated")
         else:
-            print("nothing to do do, exiting")
+            print("Nothing to do do, exiting")
 
 
 if __name__ == "__main__":
