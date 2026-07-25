@@ -13,3 +13,6 @@ members = ["tasks/*", "common", "scripts"]
 
 [tool.uv.sources]
 common = { workspace = true }
+
+[tool.ruff.lint]
+select = ["I"]
