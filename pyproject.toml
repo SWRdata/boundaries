@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "common",
+    "scripts"
 ]
 
 [tool.uv.workspace]
@@ -13,6 +14,7 @@ members = ["tasks/*", "common", "scripts"]
 
 [tool.uv.sources]
 common = { workspace = true }
+scripts = { workspace = true }
 
 [tool.ruff.lint]
 select = ["I"]

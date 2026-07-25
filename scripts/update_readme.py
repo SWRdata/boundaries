@@ -8,9 +8,14 @@ import re
 from io import StringIO
 
 import requests
+from tap import Tap
 
 
-def run():
+class ArgumentParser(Tap):
+    readme_path: str
+
+
+def main(args: ArgumentParser):
     manifest_url = "https://static.datenhub.net/data/boundaries/manifest.csv"
     r = requests.get(manifest_url, verify=True)
 
@@ -29,16 +34,21 @@ def run():
 
     print(f"Found {len(timestamps)} timestamps:\n{'\n'.join(timestamps)}")
 
-    with open("../README.md", "rw") as f:
+    with open(args.readme_path, "r") as f:
         old_readme = f.read()
         new_readme = re.sub(
             r"(<!-- BEGIN TIMESTAMPS.+\n)(.+)(\n<!-- END TIMESTAMPS.+)",
             f"\\1{', '.join([f'`{ts}`' for ts in timestamps])}\\3",
             old_readme,
         )
+
         if new_readme != old_readme:
-            f.write(new_readme)
-            print("Readme updated")
+            with open("../README.md", "w") as f:
+                f.write(new_readme)
+                print("Readme updated")
+        else:
+            print("nothing to do do, exiting")
 
 
-run()
+if __name__ == "__main__":
+    main(ArgumentParser(description=__doc__).parse_args())
