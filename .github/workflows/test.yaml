@@ -27,5 +27,5 @@ jobs:
           enable-cache: true
       - run: uv sync
         working-directory: scripts
-      - run: uv run python -m unittest
+      - run: uv run python -m unittest -v
         working-directory: scripts
