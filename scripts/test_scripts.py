@@ -12,6 +12,7 @@ class TestUpdateReadme(unittest.TestCase):
                 "readme_path": None,
                 "manifest": dedent(manifest).strip(),
                 "manifest_url": None,
+                "quiet": True,
             }
         )
 

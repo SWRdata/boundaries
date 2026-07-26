@@ -20,6 +20,7 @@ class ArgumentParser(Tap):
     readme_path: Optional[str]
     manifest: Optional[str]
     manifest_url: Optional[str]
+    quiet: bool = False
 
     def process_args(self):
         if not (self.manifest or self.manifest_url):
@@ -42,7 +43,11 @@ def get_readme(path: str) -> str:
 def write_readme(path: str, content: str):
     with open(path, "w") as f:
         f.write(content)
-        print(f"wrote updated readme to {path}")
+
+
+def log(msg: str, quiet: bool):
+    if not quiet:
+        print(msg)
 
 
 def update_readme(args: ArgumentParser) -> str:
@@ -56,8 +61,8 @@ def update_readme(args: ArgumentParser) -> str:
                 timestamps.append(m.group(1))
 
     timestamps = list(dict.fromkeys(timestamps))
+    log(f"found {len(timestamps)} timestamps:\n{'\n'.join(timestamps)}", args.quiet)
 
-    # print(f"found {len(timestamps)} timestamps:\n{'\n'.join(timestamps)}")
     old_readme = get_readme(args.readme_path) if args.readme_path else args.readme
 
     new_readme = re.sub(
@@ -69,6 +74,7 @@ def update_readme(args: ArgumentParser) -> str:
     if new_readme != old_readme:
         if args.readme_path:
             write_readme(args.readme_path, new_readme)
+            log(f"wrote updated readme to {args.readme_path}", args.quiet)
 
     return new_readme
 
