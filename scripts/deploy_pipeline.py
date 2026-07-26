@@ -82,11 +82,10 @@ def main(args: ArgumentParser):
                 path,
                 "--tag",
                 image_tag,
-                "--secret",
-                "id=google_creds,env=GAR_READER_SA_KEY",
                 "--push",
             ]
         ).check_returncode()
+
         local_tags.append(image_tag)
 
     # It seems to me like we don't really need to SSH into any box,

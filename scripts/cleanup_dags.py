@@ -1,5 +1,5 @@
 """
-Clean up unused DAG files in the remote storage
+Delete unused DAG files in the remote storage
 """
 
 import glob
@@ -14,7 +14,6 @@ from tap import Tap
 
 class ArgumentParser(Tap):
     base_dir: str = "tasks"  # base directory to search for dockerfiles
-    registry_base: str  # artifact registry base url
     bucket_name: str = ""  # name of your Managed Airflow's DAGs bucket
 
 
