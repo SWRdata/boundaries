@@ -3,8 +3,8 @@ from datetime import date
 
 import geopandas as gp
 import pandas as pd
-
 from globals import BKG_URL, NAME_SUBS
+
 from usecases.fetch_unless_cached import fetch_unless_cached
 from usecases.make_versatiles import make_versatiles
 

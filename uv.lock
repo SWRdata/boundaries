@@ -43,11 +43,19 @@ dependencies = [
     { name = "scripts" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "ruff" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "common", editable = "common" },
     { name = "scripts", virtual = "scripts" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "ruff", specifier = ">=0.16.0" }]
 
 [[package]]
 name = "certifi"
