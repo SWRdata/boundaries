@@ -1,56 +1,77 @@
 """
-Update the top-level readme using a manifest file stored in GCS
-
-TODO: Extend the Airflow task to trigger a GH Action (via webhook) which calls this script
-It's a little convoluted but lets us easily open a PR against the repo etc
+Update the "Available Timestamps" section in the top-level readme using a manifest file
 """
+
+# TODO: Extend the Airflow task to trigger a GH Action (via webhook) which calls this script
+# It's a little convoluted but lets us easily open a PR against the repo etc
+# "https://static.datenhub.net/data/boundaries/manifest.csv"
 
 import csv
 import re
 from io import StringIO
+from typing import Optional
 
 import requests
 from tap import Tap
 
 
 class ArgumentParser(Tap):
-    readme_path: str
+    readme: str = ""
+    readme_path: Optional[str]
+    manifest: Optional[str]
+    manifest_url: Optional[str]
+
+    def process_args(self):
+        if not (self.manifest or self.manifest_url):
+            raise ValueError("must provide either --manifest or --manifest_url")
+        if not (self.readme or self.readme_path):
+            raise ValueError("must provide either --readme or --readme_path")
 
 
-def main(args: ArgumentParser):
-    manifest_url = "https://static.datenhub.net/data/boundaries/manifest.csv"
-    r = requests.get(manifest_url, verify=True)
+def get_manifest(url: str) -> str | None:
+    print(f"fetching manifest from {url}")
+    r = requests.get(url, verify=True)
+    return r.text if r.ok else None
 
-    if not r.ok:
-        print(f"Request failed ({r.status_code}), exiting")
-        return
 
-    timestamps: set[str] = set()
+def get_readme(path: str) -> str:
+    with open(path, "r") as f:
+        return f.read()
 
-    with StringIO(r.text) as f:
-        reader = csv.DictReader(f)
-        for row in reader:
+
+def write_readme(path: str, content: str):
+    with open(path, "w") as f:
+        f.write(content)
+        print(f"wrote updated readme to {path}")
+
+
+def update_readme(args: ArgumentParser) -> str:
+    manifest = get_manifest(args.manifest_url) if args.manifest_url else args.manifest
+    timestamps: list[str] = []
+
+    with StringIO(manifest) as f:
+        for row in csv.DictReader(f):
             m = re.search(r"(?:.+_)(\d+-\d+-\d+)(?:.+)", row["name"])
             if m:
-                timestamps.add(m.group(1))
+                timestamps.append(m.group(1))
 
-    print(f"Found {len(timestamps)} timestamps:\n{'\n'.join(timestamps)}")
+    timestamps = list(dict.fromkeys(timestamps))
 
-    with open(args.readme_path, "r") as f:
-        old_readme = f.read()
-        new_readme = re.sub(
-            r"(<!-- BEGIN TIMESTAMPS.+\n)(.+)(\n<!-- END TIMESTAMPS.+)",
-            f"\\1{', '.join([f'`{ts}`' for ts in timestamps])}\\3",
-            old_readme,
-        )
+    # print(f"found {len(timestamps)} timestamps:\n{'\n'.join(timestamps)}")
+    old_readme = get_readme(args.readme_path) if args.readme_path else args.readme
 
-        if new_readme != old_readme:
-            with open(args.readme_path, "w") as f:
-                f.write(new_readme)
-                print("Readme updated")
-        else:
-            print("Nothing to do do, exiting")
+    new_readme = re.sub(
+        r"(<!-- BEGIN TIMESTAMPS.+\n)(.+)(\n<!-- END TIMESTAMPS.+)",
+        f"\\1{', '.join([f'`{ts}`' for ts in timestamps])}\\3",
+        old_readme,
+    )
+
+    if new_readme != old_readme:
+        if args.readme_path:
+            write_readme(args.readme_path, new_readme)
+
+    return new_readme
 
 
 if __name__ == "__main__":
-    main(ArgumentParser(description=__doc__).parse_args())
+    update_readme(ArgumentParser(description=__doc__).parse_args())

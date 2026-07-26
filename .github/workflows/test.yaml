@@ -1,4 +1,4 @@
-name: ruff
+name: tests
 
 on:
   workflow_dispatch:
@@ -6,12 +6,10 @@ on:
     branches:
       - main
     paths:
-      - "tasks/make_boundaries/**"
       - "scripts/**"
   pull_request:
     types: [opened, synchronize]
     paths:
-      - "tasks/make_boundaries/**"
       - "scripts/**"
 
 permissions:
@@ -20,22 +18,14 @@ permissions:
   id-token: write
 
 jobs:
-  ty:
+  test:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # 7.0.0
       - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # 8.2.0
         with:
           enable-cache: true
-      - name: uv sync tasks
-        working-directory: tasks/make_boundaries
-        run: uv sync
-      - name: ruff check tasks
-        working-directory: tasks/make_boundaries
-        run: uvx ruff check src
-      - name: uv sync scripts
+      - run: uv sync
         working-directory: scripts
-        run: uv sync
-      - name: ruff check scripts
+      - run: uv run python -m unittest
         working-directory: scripts
-        run: uvx ruff check
