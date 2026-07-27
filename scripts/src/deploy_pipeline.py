@@ -9,6 +9,10 @@ Deploy an Airflow pipeline to SWR Data Lab infrastructure
 
 # See: https://docs.cloud.google.com/composer/docs/composer-3/dag-cicd-github#presubmit-check-job
 
+# It seems to me like we don't really need to SSH into any box,
+# the KubernetesPodOperator will just pull the image itself
+# https://docs.cloud.google.com/composer/docs/composer-3/use-kubernetes-pod-operator#minimal-config
+
 import glob
 import os
 import re
@@ -21,13 +25,13 @@ from tap import Tap
 
 class ArgumentParser(Tap):
     base_dir: str = "tasks"  # base directory to search for dockerfiles
-    registry_base: str  # artifact registry base url
+    registry_base: str = "europe-west3-docker.pkg.dev/swr-datalab-prod/etl-images-airflow-swr-data-lab"  # artifact registry base url
     bucket_name: str = ""  # name of your Managed Airflow's DAGs bucket
 
 
 def upload_dag_folder():
     print("synching the DAG folder")
-    pass
+    return
 
 
 def read_file(path: str) -> str:
@@ -82,15 +86,11 @@ def main(args: ArgumentParser):
                 path,
                 "--tag",
                 image_tag,
-                "--push",
+                # "--push",
             ]
         ).check_returncode()
 
         local_tags.append(image_tag)
-
-    # It seems to me like we don't really need to SSH into any box,
-    # the KubernetesPodOperator will just pull the image itself
-    # https://docs.cloud.google.com/composer/docs/composer-3/use-kubernetes-pod-operator#minimal-config
 
     # upload the dag folder to GCS
     upload_dag_folder()
