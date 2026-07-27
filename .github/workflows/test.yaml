@@ -28,4 +28,4 @@ jobs:
       - run: uv sync
         working-directory: scripts
       - run: uv run python -m unittest -v
-        working-directory: scripts
+        working-directory: scripts/src
