@@ -1,16 +1,20 @@
 # SWRData/Boundaries
 
-Ready-to-use, timestamped, tiled boundary data for Germany.
+Ready-to-use, timestamped boundary data for Germany.
 
 [![deploy demo](https://github.com/SWRdata/boundaries/actions/workflows/deploy-demo.yaml/badge.svg)](https://github.com/SWRdata/boundaries/actions/workflows/deploy-demo.yaml) [![deploy pipeline](https://github.com/SWRdata/boundaries/actions/workflows/deploy-pipeline.yaml/badge.svg)](https://github.com/SWRdata/boundaries/actions/workflows/deploy-pipeline.yaml) [![ty](https://github.com/SWRdata/boundaries/actions/workflows/ty.yaml/badge.svg)](https://github.com/SWRdata/boundaries/actions/workflows/ty.yaml)
 
 ## Usage
 
-```
-https://static.datenhub.net/data/boundaries/[TILESET]_[TIMESTAMP].versatiles?{z}/{x}/{y}
-```
+The latest `admin_boundaries` tileset is available here:
 
-See [demo](https://static.datenhub.net/apps/boundaries/main/index.html) for code samples. Note these tilesets require [manual attribution](https://maplibre.org/maplibre-gl-js/docs/API/interfaces/Source/#attribution).
+<!-- BEGIN LATEST_URL -->
+```
+https://static.datenhub.net/data/boundaries/admin_boundaries_2025-01-01.versatiles?{z}/{x}/{y}
+```
+<!-- END LATEST_URL -->
+
+See [demo](https://static.datenhub.net/apps/boundaries/main/index.html) for code samples. Note these tilesets may require [manual attribution](https://maplibre.org/maplibre-gl-js/docs/API/interfaces/Source/#attribution).
 
 ### Tilesets
 
@@ -35,19 +39,6 @@ See [demo](https://static.datenhub.net/apps/boundaries/main/index.html) for code
 | `land`  | Two-digit ID indicating the Bundesland containing the feature or the feature itself                                                                                                            |
 | `level` | Administrative hierarchy level; lower levels represent larger features (follows [OSM levels](https://wiki.openstreetmap.org/wiki/File:Administrative_Gliederung_Deutschlands_admin_level.png)) |
 
-## Contributing
-
-### Data pipeline
-
-- Install [`uv`](https://github.com/astral-sh/uv), [`versatiles`](https://github.com/versatiles-org/versatiles-rs) and [`tippecanoe`](https://github.com/felt/tippecanoe) (Mac/Linux only)
-- `cd tasks/make_boundaries`
-- `uv sync` to install Python dependencies
-- `uv run src/main.py` to run the tile generation pipeline
-- `versatiles serve -c versatiles.yaml` to start a local tile server
-
-### Demo
-
-- `cd demo && npm i && npm run start`
 
 ## Prior work
 

@@ -7,8 +7,11 @@ def make_versatiles(
     output_path: str,
     tilejson_path: str,
     date: dt.date,
-    tc_args: list[str] = [],
+    tc_args: list[str] | None = None,
 ):
+    if tc_args is None:
+        tc_args = []
+
     mbtiles_path = output_path.replace(".versatiles", ".mbtiles")
     mbtiles_path_tmp = mbtiles_path.replace(".mbtiles", "_tmp.mbtiles")
 
@@ -35,11 +38,14 @@ def make_versatiles(
             "-o",
             mbtiles_path,
             input_path,
-        ]
-    ).check_returncode()
+        ],
+        check=True,
+    )
 
     # Unclear to me why this fixes overzoom but it does
-    subprocess.run(["tile-join", "-f", "-o", mbtiles_path_tmp, mbtiles_path])
+    subprocess.run(
+        ["tile-join", "-f", "-o", mbtiles_path_tmp, mbtiles_path], check=True
+    )
     print("done")
 
     print("Converting to versatiles... ", end="")
@@ -50,8 +56,9 @@ def make_versatiles(
             "--compress=brotli",
             mbtiles_path_tmp,
             output_path,
-        ]
-    ).check_returncode()
+        ],
+        check=True,
+    )
     print("done")
 
     print("Writing tiles.json... ", end="")
@@ -65,10 +72,11 @@ def make_versatiles(
                 output_path,
             ],
             stdout=f,
-        ).check_returncode()
+            check=True,
+        )
         print("done")
 
     print("Cleaning up temporary files... ", end="")
-    subprocess.run(["rm", mbtiles_path]).check_returncode()
-    subprocess.run(["rm", mbtiles_path_tmp]).check_returncode()
+    subprocess.run(["rm", mbtiles_path], check=True)
+    subprocess.run(["rm", mbtiles_path_tmp], check=True)
     print("done\n")

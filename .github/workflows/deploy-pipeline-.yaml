@@ -1,0 +1,38 @@
+name: deploy pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ./dag/**
+      - ./tasks/**
+
+permissions:
+  contents: write
+  id-token: write
+
+env:
+  REGISTRY_NAME: etl-images-airflow-swr-data-lab
+  REGISTRY_REGION: europe-west3
+  PROJECT_ID: swr-datalab-prod
+  BUCKET_NAME: europe-west3-swr-datalab-ai-4eee14a8-bucket
+  GCE_INSTANCE_NAME: datapipelines
+  GCE_ZONE: europe-west3-a
+
+jobs:
+  deploy-pipeline:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 #v3.0.0
+        id: gcp-auth
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+      - name: get repo name
+        id: get-repo-name
+        run: echo "name=$(basename $GITHUB_REPOSITORY)" >> $GITHUB_OUTPUT
+      - name: deploy
+        run: uv run --project=scripts deploy_pipeline.py --bucket_name="${{ env.BUCKET_NAME }}" --base_dir="tasks" --registry_base=europe-west3-docker.pkg.dev/swr-datalab-prod/etl-images-airflow-swr-data-lab
+        env:
+          GCP_ACCESS_TOKEN: ${{ steps.gcp-auth.outputs.access_token }}

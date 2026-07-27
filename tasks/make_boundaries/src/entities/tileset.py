@@ -1,4 +1,5 @@
-from typing import Any, Callable, Dict
+from collections.abc import Callable
+from typing import Any
 
 
 class Tileset:
@@ -9,7 +10,7 @@ class Tileset:
         self,
         name: str,
         make_fn: Callable,
-        make_args: Dict[str, Any],
+        make_args: dict[str, Any],
     ):
         self.name = name
         self.make_fn = make_fn

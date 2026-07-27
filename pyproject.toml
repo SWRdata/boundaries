@@ -1,0 +1,19 @@
+[project]
+name = "boundaries"
+version = "0.1.0"
+description = ""
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "common",
+    "scripts",
+    "make_boundaries"
+]
+
+[tool.uv.workspace]
+members = ["tasks/*", "common", "scripts"]
+
+[tool.uv.sources]
+common = { workspace = true }
+scripts = { workspace = true }
+make_boundaries = { workspace = true }

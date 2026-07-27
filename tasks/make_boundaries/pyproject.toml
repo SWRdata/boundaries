@@ -1,11 +1,11 @@
 [project]
-name = "fetch-geometry"
+name = "make_boundaries"
 version = "0.1.0"
 description = ""
-readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "beautifulsoup4>=4.15.0",
+    "common",
     "dotenv>=0.9.9",
     "geopandas>=1.1.4",
     "google-cloud-storage>=3.12.0",
@@ -13,4 +13,10 @@ dependencies = [
     "pandas>=3.0.3",
     "requests>=2.34.2",
     "shapely>=2.1.2",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.0",
+    "ty>=0.0.63",
 ]

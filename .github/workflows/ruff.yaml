@@ -1,4 +1,4 @@
-name: ty
+name: ruff
 
 on:
   workflow_dispatch:
@@ -30,6 +30,6 @@ jobs:
         with:
           enable-cache: true
       - run: uv sync
-      - run: uv run --project=tasks/make_boundaries ty check tasks/make_boundaries/src
-      - run: uv run --project=scripts ty check scripts
-      - run: uv run --project=common ty check common
+      - run: uv run --project=tasks/make_boundaries ruff check tasks/make_boundaries/src
+      - run: uv run --project=scripts ruff check scripts
+      - run: uv run --project=common ruff check common
