@@ -1,12 +1,11 @@
 import datetime
 import os
+from subprocess import CalledProcessError
 
 import geopandas as gp
 import pandas as pd
-import shapely.affinity as affinity
-import shapely.geometry as geometry
-import shapely.ops as ops
 from globals import BKG_URL, NAME_SUBS
+from shapely import affinity, geometry, ops
 
 from usecases.fetch_unless_cached import fetch_unless_cached
 from usecases.make_versatiles import make_versatiles
@@ -100,7 +99,7 @@ def make_admin_labels(
     res["id"] = res["OBJID"]
 
     # 4. Apply manual substitutions
-    res["name"] = res["name"].apply(lambda x: NAME_SUBS[x] if x in NAME_SUBS else x)
+    res["name"] = res["name"].apply(lambda x: NAME_SUBS.get(x, x))
 
     label_subs = gp.read_file("./label_substitutions.geojson")
     print(f"Applying {label_subs.shape[0]} manual substitutions... ", end="")
@@ -132,7 +131,7 @@ def make_admin_labels(
         make_versatiles(
             json_path, versatiles_path, tilejson_path, date, ["--base-zoom=5"]
         )
-    except Exception as e:
+    except CalledProcessError as e:
         print(f"Failed to build {versatiles_path}: {e!r}")
         return []
 

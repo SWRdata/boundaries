@@ -15,10 +15,7 @@ Deploy an Airflow pipeline to SWR Data Lab infrastructure
 
 import glob
 import os
-import re
-import secrets
 import subprocess
-from sys import stdout
 
 from tap import Tap
 
@@ -31,7 +28,6 @@ class ArgumentParser(Tap):
 
 def upload_dag_folder():
     print("synching the DAG folder")
-    return
 
 
 def read_file(path: str) -> str:
@@ -58,7 +54,7 @@ def main(args: ArgumentParser):
         print("Failed to get GCP access token key, exiting")
         return
 
-    for i, path in enumerate([d.strip("Dockerfile") for d in dockerfiles]):
+    for i, path in enumerate([d.removesuffix("Dockerfile") for d in dockerfiles]):
         print(f"building {path}/Dockerfile ({i + 1}/{len(dockerfiles)})")
 
         image_name = (
@@ -77,7 +73,8 @@ def main(args: ArgumentParser):
                 gcp_token,
             ],
             stdout=subprocess.DEVNULL,  # supress logs to not leak secrets
-        ).check_returncode()
+            check=True,
+        )
 
         subprocess.run(
             [
@@ -87,8 +84,9 @@ def main(args: ArgumentParser):
                 "--tag",
                 image_tag,
                 # "--push",
-            ]
-        ).check_returncode()
+            ],
+            check=True,
+        )
 
         local_tags.append(image_tag)
 

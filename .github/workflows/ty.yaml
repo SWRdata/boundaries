@@ -27,15 +27,7 @@ jobs:
       - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # 8.2.0
         with:
           enable-cache: true
-      - name: uv sync tasks
-        working-directory: tasks/make_boundaries
-        run: uv sync
-      - name: ty check tasks
-        working-directory: tasks/make_boundaries
-        run: uvx ty check src
-      - name: uv sync scripts
-        working-directory: scripts
-        run: uv sync --project scripts
-      - name: ty check scripts
-        working-directory: scripts
-        run: uvx ty check
+      - run: uv sync
+      - run: uv run --project=tasks/make_boundaries ty check tasks/make_boundaries/src
+      - run: uv run --project=scripts ty check scripts
+      - run: uv run --project=common ty check common

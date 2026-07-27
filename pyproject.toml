@@ -15,11 +15,3 @@ members = ["tasks/*", "common", "scripts"]
 [tool.uv.sources]
 common = { workspace = true }
 scripts = { workspace = true }
-
-[tool.ruff.lint]
-select = ["I"]
-
-[dependency-groups]
-dev = [
-    "ruff>=0.16.0",
-]

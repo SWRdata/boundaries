@@ -1,7 +1,7 @@
 import unittest
 from textwrap import dedent
 
-from update_readme import ArgumentParser, update_readme
+from scripts.update_readme import ArgumentParser, update_readme
 
 
 class TestUpdateReadme(unittest.TestCase):

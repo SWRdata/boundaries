@@ -9,7 +9,6 @@ Update the "Available Timestamps" section in the top-level readme using a manife
 import csv
 import re
 from io import StringIO
-from typing import Optional
 
 import requests
 from tap import Tap
@@ -17,9 +16,9 @@ from tap import Tap
 
 class ArgumentParser(Tap):
     readme: str = ""
-    readme_path: Optional[str]
-    manifest: Optional[str]
-    manifest_url: Optional[str]
+    readme_path: str | None
+    manifest: str | None
+    manifest_url: str | None
     quiet: bool = False
 
     def process_args(self):
@@ -71,10 +70,9 @@ def update_readme(args: ArgumentParser) -> str:
         old_readme,
     )
 
-    if new_readme != old_readme:
-        if args.readme_path:
-            write_readme(args.readme_path, new_readme)
-            log(f"wrote updated readme to {args.readme_path}", args.quiet)
+    if (new_readme != old_readme) and args.readme_path:
+        write_readme(args.readme_path, new_readme)
+        log(f"wrote updated readme to {args.readme_path}", args.quiet)
 
     return new_readme
 

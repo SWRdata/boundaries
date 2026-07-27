@@ -1,6 +1,5 @@
 import datetime
 import os
-from typing import Dict
 
 from common.upload_blob import upload_blob
 from dotenv import load_dotenv
@@ -21,7 +20,7 @@ processed_dir = "./tmp/processed/"
 manifest_path = os.path.join(processed_dir, "manifest.csv")
 
 
-tilesets: Dict[str, Tileset] = {}
+tilesets: dict[str, Tileset] = {}
 
 
 def run():
@@ -71,9 +70,7 @@ def run():
             },
         )
 
-    pending_files = [
-        k for k in tilesets.keys() if f"{k}.versatiles" not in existing_files
-    ]
+    pending_files = [k for k in tilesets if f"{k}.versatiles" not in existing_files]
 
     if len(pending_files) == 0:
         print("\nNo files to be built, bye!")

@@ -2,13 +2,6 @@
 Delete unused docker images from the registry
 """
 
-import glob
-import os
-import re
-import secrets
-import subprocess
-from sys import stdout
-
 from tap import Tap
 
 
@@ -19,8 +12,7 @@ class ArgumentParser(Tap):
 
 def main(args: ArgumentParser):
 
-    local_tags: list[str] = []
-    pass
+    _local_tags: list[str] = []
 
 
 if __name__ == "__main__":

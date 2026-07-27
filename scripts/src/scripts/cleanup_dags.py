@@ -2,13 +2,6 @@
 Delete unused DAG files in the remote storage
 """
 
-import glob
-import os
-import re
-import secrets
-import subprocess
-from sys import stdout
-
 from tap import Tap
 
 

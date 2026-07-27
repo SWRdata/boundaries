@@ -1,5 +1,6 @@
 import os
 from datetime import date
+from subprocess import CalledProcessError
 
 import geopandas as gp
 import pandas as pd
@@ -80,7 +81,7 @@ def make_admin(cache_dir: str, output_dir: str, date: date) -> list[str]:
     res["ars"] = res["ARS"]
     res["id"] = res["OBJID"]
 
-    res["name"] = res["name"].apply(lambda x: NAME_SUBS[x] if x in NAME_SUBS else x)
+    res["name"] = res["name"].apply(lambda x: NAME_SUBS.get(x, x))
 
     output_cols = ["id", "ars", "land", "name", "admin_level", "geometry"]
     res[output_cols].to_crs("wgs84").to_file(json_path)
@@ -92,7 +93,7 @@ def make_admin(cache_dir: str, output_dir: str, date: date) -> list[str]:
 
     try:
         make_versatiles(json_path, versatiles_path, tilejson_path, date)
-    except Exception:
+    except CalledProcessError:
         print(f"Failed to build {versatiles_path}")
         return []
 
