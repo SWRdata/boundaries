@@ -40,12 +40,14 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "common" },
+    { name = "make-boundaries" },
     { name = "scripts" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "common", editable = "common" },
+    { name = "make-boundaries", virtual = "tasks/make_boundaries" },
     { name = "scripts", virtual = "scripts" },
 ]
 
