@@ -9,6 +9,7 @@ Update the "Available Timestamps" section in the top-level readme using a manife
 import csv
 import re
 from io import StringIO
+from typing import Optional
 
 import requests
 from tap import Tap
@@ -16,9 +17,9 @@ from tap import Tap
 
 class ArgumentParser(Tap):
     readme: str = ""
-    readme_path: str | None
-    manifest: str | None
-    manifest_url: str | None
+    readme_path: Optional[str] = None  # noqa: UP045
+    manifest: Optional[str] = None  # noqa: UP045
+    manifest_url: Optional[str] = None  # noqa: UP045
     quiet: bool = False
 
     def process_args(self):
@@ -35,12 +36,12 @@ def get_manifest(url: str) -> str | None:
 
 
 def get_readme(path: str) -> str:
-    with open(path, "r") as f:
+    with open(path, "r", encoding="utf-8") as f:
         return f.read()
 
 
 def write_readme(path: str, content: str):
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf-8") as f:
         f.write(content)
 
 
@@ -64,10 +65,18 @@ def update_readme(args: ArgumentParser) -> str:
 
     old_readme = get_readme(args.readme_path) if args.readme_path else args.readme
 
+    # Update timestamps list
     new_readme = re.sub(
         r"(<!-- BEGIN TIMESTAMPS.+\n)(.+)(\n<!-- END TIMESTAMPS.+)",
         f"\\1{', '.join([f'`{ts}`' for ts in timestamps])}\\3",
         old_readme,
+    )
+
+    # Update latest tile URL
+    new_readme = re.sub(
+        r"(<!-- BEGIN LATEST_URL.+\n`+\n.+admin_boundaries_)((\d){4}-(\d){2}-(\d){2})(.+\n`+\n<!-- END LATEST_URL.+)",
+        "\\g<1>" + timestamps[-1] + "\\g<6>",
+        new_readme,
     )
 
     if (new_readme != old_readme) and args.readme_path:
