@@ -25,6 +25,6 @@
   },
   "dependencies": {
     "@swr-data-lab/components": "^3.19",
-    "svelte-highlight": "^7.9.0"
+    "svelte-highlight": "^7.16.2"
   }
 }
