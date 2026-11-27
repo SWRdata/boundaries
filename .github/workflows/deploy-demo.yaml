@@ -12,21 +12,31 @@ on:
     paths:
       - 'demo/**'
 
-permissions:
-  contents: write
-  pull-requests: write
-  id-token: write
-
 jobs:
-  reuse-build-and-deploy-node-app:
-    uses: SWRdata/workflows-swr-data-lab/.github/workflows/build_and_deploy_node_app.yml@main
-    with:
-      working_directory: 'demo'
-      full_repository: ${{ github.repository }}
-      branch: ${{ github.head_ref || github.ref_name }}
-      install_command: 'npm install -g npm && npm ci'
-      build_command: 'npm run build'
-      build_path: 'build'
-      node_version: 25
-    secrets:
-      SWR_NPM_TOKEN: ${{ secrets.SWR_NPM_TOKEN }}
+  build-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        working-directory: ./demo
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 25
+      - run: npm ci
+      - run: npm run build
+      - uses: ./.github/actions/gcp-auth
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          pool_id: ${{ secrets.GCP_POOL_ID }}
+          project_number: ${{ secrets.GCP_PROJECT_NUMBER }}
+          wip_sa: ${{ secrets.GCP_WIP_SA }}
+      - name: 'Upload files to GCP'
+        uses: google-github-actions/upload-cloud-storage@6397bd7208e18d13ba2619ee21b9873edc94427a #v3.0.0
+        with:
+          path: './demo/build'
+          parent: false
+          destination: 'datenhub-net-static/apps/${{ github.event.repository.name }}/${{ github.head_ref || github.ref_name }}/'
